@@ -8,13 +8,15 @@ export default function Header() {
   const navigate = useNavigate();
   const auth = getAuth();
   useEffect(() => {
-    onAuthStateChanged(auth, (user) => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setPageState("Profile");
       } else {
         setPageState("Sign In");
       }
     });
+
+    return () => unsubscribe(); // Cleanup the subscription when the component unmounts
   }, [auth]);
   function pathMatchRoute(route) {
     if (route === location.pathname) {
@@ -44,20 +46,29 @@ export default function Header() {
               Home
             </li>
             {/* <li
-              className={`cursor-pointer py-3 text-m font-semibold  text-black border-b-[3px]  ${
-                pathMatchRoute("/page-name") && "text-black border-b-red-500"
-              }`}
-              onClick={() => navigate("/page-name")}
-            >
-              page-name
-            </li> */}
-            <li
               className={`cursor-pointer py-3 text-m font-semibold text-black border-b-[3px]  ${
                 pathMatchRoute("/SignIn") && "text-black border-b-red-500"
               }`}
               onClick={() => navigate("/SignIn")}
             >
               SignIn
+            </li>
+            <li
+              className={`cursor-pointer py-3 text-m font-semibold text-black border-b-[3px]  ${
+                pathMatchRoute("/Profile") && "text-black border-b-red-500"
+              }`}
+              onClick={() => navigate("/Profile")}
+            >
+              Profile
+            </li> */}
+            <li
+              className={`cursor-pointer py-3 text-m font-semibold  text-black border-b-[3px]  ${
+                (pathMatchRoute("/SignIn") && "text-black border-b-red-500") ||
+                (pathMatchRoute("/Profile") && "text-black border-b-red-500")
+              }`}
+              onClick={() => navigate("/Profile")}
+            >
+              {pageState}
             </li>
           </ul>
         </div>
