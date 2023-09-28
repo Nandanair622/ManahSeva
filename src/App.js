@@ -14,6 +14,7 @@ import PrivateRoute from "./components/PrivateRoute";
 import EditBlog from "./pages/EditBlog";
 import ReadBlog from "./pages/ReadBlog";
 import Footer from "./components/Footer";
+import Chat from "./components/Chat"
 function App() {
   return (
     <>
@@ -26,18 +27,19 @@ function App() {
           <Route path="/SignUp" element={<SignUp />}></Route>
           <Route path="/ForgotPsw" element={<ForgotPsw />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
-          <Route path="/CreateBlog" element={<CreateBlog />}></Route>
-          <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route>
+          {/* <Route path="/CreateBlog" element={<CreateBlog />}></Route> */}
+          {/* <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route> */}
           <Route path="/:blogId" element={<ReadBlog />}></Route>
-          {/* <Route path="/CreateBlog" element={<PrivateRoute />}>
+          <Route path="/CreateBlog" element={<PrivateRoute />}>
             <Route path="/CreateBlog" element={<CreateBlog />}></Route>
-          </Route> */}
-          {/* <Route path="/EditBlog" element={<PrivateRoute />}>
-            <Route
-              path="/EditBlog/:blogId"
-              element={<EditBlog />}
-            ></Route>
-          </Route> */}
+          </Route>
+          <Route path="/EditBlog" element={<PrivateRoute />}>
+            <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route>
+          </Route>
+
+          <Route path="/Chat" element={<PrivateRoute />}>
+            <Route path="/Chat" element={<Chat />}></Route>
+          </Route>
         </Routes>
         <Footer />
       </Router>
