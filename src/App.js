@@ -13,6 +13,7 @@ import CreateBlog from "./pages/CreateBlog";
 import PrivateRoute from "./components/PrivateRoute";
 import EditBlog from "./pages/EditBlog";
 import ReadBlog from "./pages/ReadBlog";
+import Footer from "./components/Footer";
 function App() {
   return (
     <>
@@ -27,10 +28,7 @@ function App() {
           <Route path="/Profile" element={<Profile />}></Route>
           <Route path="/CreateBlog" element={<CreateBlog />}></Route>
           <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route>
-          <Route
-            path="/:blogId"
-            element={<ReadBlog />}
-          ></Route>
+          <Route path="/:blogId" element={<ReadBlog />}></Route>
           {/* <Route path="/CreateBlog" element={<PrivateRoute />}>
             <Route path="/CreateBlog" element={<CreateBlog />}></Route>
           </Route> */}
@@ -41,6 +39,7 @@ function App() {
             ></Route>
           </Route> */}
         </Routes>
+        <Footer />
       </Router>
       <ToastContainer
         position="bottom-center"

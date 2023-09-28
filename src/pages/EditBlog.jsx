@@ -1,5 +1,5 @@
-import { useState } from "react";
-// import Spinner from "../components/Spinner";
+import React, { useState, useEffect } from "react";
+import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import {
   getStorage,
@@ -19,8 +19,18 @@ import {
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate, useParams } from "react-router-dom";
-import { useEffect } from "react";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
 
+// Register FontSize and FontStyle modules
+const FontSizeStyle = Quill.import("attributors/style/size");
+Quill.register(FontSizeStyle, true);
+
+const FontAttributor = Quill.import("attributors/class/font");
+Quill.register(FontAttributor, true);
+const Size = Quill.import("formats/size");
+Size.whitelist = ["10px", "12px", "16px", "18px", "24px", "32px"];
+Quill.register(Size, true);
 export default function EditBlog() {
   const navigate = useNavigate();
   const auth = getAuth();
@@ -55,10 +65,11 @@ export default function EditBlog() {
       } else {
         navigate("/");
         toast.error("Blog does not exist");
+        setLoading(false); // Handle loading state when blog doesn't exist
       }
     }
     fetchBlog();
-  }, [navigate, params.BlogId]);
+  }, [navigate, params.blogId]);
 
   function onChange(e) {
     let boolean = null;
@@ -83,6 +94,7 @@ export default function EditBlog() {
       }));
     }
   }
+
   async function onSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -102,27 +114,14 @@ export default function EditBlog() {
         uploadTask.on(
           "state_changed",
           (snapshot) => {
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log("Upload is " + progress + "% done");
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
-            }
           },
           (error) => {
-            // Handle unsuccessful uploads
             reject(error);
           },
           () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               resolve(downloadURL);
             });
@@ -142,7 +141,6 @@ export default function EditBlog() {
     const formDataCopy = {
       ...formData,
       imgUrls,
-
       timestamp: serverTimestamp(),
       userRef: auth.currentUser.uid,
     };
@@ -156,9 +154,10 @@ export default function EditBlog() {
     navigate(`/${docRef.id}`);
   }
 
-  // if (loading) {
-  //   return <Spinner />;
-  // }
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <main className="max-w-md px-2 mx-auto">
       <h1 className="text-3xl text-center mt-6 font-bold">Edit Blog</h1>
@@ -177,22 +176,33 @@ export default function EditBlog() {
         />
 
         <p className="text-lg font-semibold">Blog Content</p>
-        <textarea
-          type="text"
-          id="content"
+        <ReactQuill
           value={content}
-          onChange={onChange}
+          onChange={(value) =>
+            setFormData((prevState) => ({
+              ...prevState,
+              content: value,
+            }))
+          }
+          modules={{
+            toolbar: [
+              [{ header: "1" }, { header: "2" }, { font: [] }],
+              [{ list: "bullet" }, { list: "ordered" }],
+              ["bold", "italic", "underline"],
+              ["link"],
+              [{ size: ["10px", "12px", "16px", "18px", "24px", "32px"] }], // Font size options
+            ],
+          }}
           placeholder="Type Content here"
-          required
           style={{
-            width: "100%",
-            minHeight: "300px", // Adjust the minimum height as needed
-            fontSize: "18px", // Adjust the font size as needed
-            padding: "10px",
-            color: "#333", // Text color
-            backgroundColor: "#fff",
+            minHeight: "300px",
+            fontSize: "18px",
             border: "1px solid #ccc",
             borderRadius: "5px",
+            width: "100%",
+            padding: "10px",
+            color: "#333",
+            backgroundColor: "#fff",
             transition:
               "border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
           }}

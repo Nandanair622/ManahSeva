@@ -1,10 +1,22 @@
-import { doc, getDoc } from "firebase/firestore";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
-import { db } from "../firebase";
-import { FaShareAlt } from "react-icons/fa";
+import { doc, getDoc } from "firebase/firestore";
 import { toast } from "react-toastify";
 import { getAuth } from "firebase/auth";
+import { db } from "../firebase";
+import { FaShareAlt } from "react-icons/fa";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+
+// Register FontSize and FontStyle modules
+const FontSizeStyle = Quill.import("attributors/style/size");
+Quill.register(FontSizeStyle, true);
+
+const FontAttributor = Quill.import("attributors/class/font");
+Quill.register(FontAttributor, true);
+const Size = Quill.import("formats/size");
+Size.whitelist = ["10px", "12px", "16px", "18px", "24px", "32px"];
+Quill.register(Size, true);// Import Quill styles
 
 export default function ReadBlog() {
   const auth = getAuth();
@@ -13,9 +25,7 @@ export default function ReadBlog() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    // Check if params.blogsId is defined before proceeding
     if (!params.blogId) {
-      // Handle the case where params.blogsId is not defined (e.g., show an error message or redirect)
       return;
     }
 
@@ -30,7 +40,7 @@ export default function ReadBlog() {
 
     fetchBlog();
   }, [params.blogId]);
-  // If the blog is still loading, you can display a loading indicator.
+
   if (loading) {
     return <div>Loading...</div>;
   }
@@ -49,7 +59,6 @@ export default function ReadBlog() {
         <FaShareAlt className="text-lg text-red-400" />
       </div>
       <div className="m-4 max-w-6xl mx-auto p-4 rounded-lg shadow-lg bg-white">
-        {/* Display the images */}
         <div className="flex space-x-4 mb-4">
           {blog.imgUrls.map((url, index) => (
             <div
@@ -59,19 +68,25 @@ export default function ReadBlog() {
                 backgroundSize: "cover",
                 backgroundPosition: "center",
                 height: "300px",
-                width: "3000px", // Adjust the image dimensions as needed
+                width: "3000px",
               }}
             ></div>
           ))}
         </div>
 
-        {/* Display the title */}
         <h1 className="text-3xl font-bold text-blue-900 text-center mb-3">
           {blog.title}
         </h1>
 
-        {/* Display the content */}
-        <p className="mt-3 mb-3 text-gray-800">{blog.content}</p>
+        {/* Display rich text content using React Quill in read-only mode */}
+        <ReactQuill
+          value={blog.content || ""}
+          readOnly={true}
+          theme="snow"
+          modules={{
+            toolbar: false, // Hide the toolbar
+          }}
+        />
       </div>
     </main>
   );

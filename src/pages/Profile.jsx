@@ -9,55 +9,48 @@ import {
   updateDoc,
   where,
 } from "firebase/firestore";
-import { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router";
 import { toast } from "react-toastify";
 import { db } from "../firebase";
 import { BsPencilSquare } from "react-icons/bs";
-import { useEffect } from "react";
+import { Link } from "react-router-dom";
 import DisplayBlog from "../components/DisplayBlog";
-
-
 export default function Profile() {
   const auth = getAuth();
   const navigate = useNavigate();
   const [changeDetail, setChangeDetail] = useState(false);
-  const [blogs, setBlogs] = useState(null);
-  const [loading, setLoading] = useState(true);
+
   const [formData, setFormData] = useState({
     name: auth.currentUser.displayName,
     email: auth.currentUser.email,
   });
   const { name, email } = formData;
-  function onLogout() {
+  function onLogOut() {
     auth.signOut();
     navigate("/");
   }
-  
+  const [blogs, setBlogs] = useState(null);
+  const [loading, setLoading] = useState(true);
   function onChange(e) {
     setFormData((prevState) => ({
       ...prevState,
       [e.target.id]: e.target.value,
     }));
   }
+  //update name in firebase
   async function onSubmit() {
     try {
+      //update in firebase authentication
       if (auth.currentUser.displayName !== name) {
-        //update display name in firebase auth
-        await updateProfile(auth.currentUser, {
-          displayName: name,
-        });
-
-        // update name in the firestore
-
-        const docRef = doc(db, "users", auth.currentUser.uid);
-        await updateDoc(docRef, {
-          name,
-        });
+        await updateProfile(auth.currentUser, { displayName: name });
       }
+      //update name in the firestore
+      const docRef = doc(db, "users", auth.currentUser.uid);
+      await updateDoc(docRef, { name });
       toast.success("Profile details updated");
     } catch (error) {
-      toast.error("Could not update the profile details");
+      toast.error("Could not update profile details");
     }
   }
   useEffect(() => {
@@ -84,9 +77,7 @@ export default function Profile() {
   async function onDelete(blogsID) {
     if (window.confirm("Are you sure you want to delete?")) {
       await deleteDoc(doc(db, "blogs", blogsID));
-      const updatedBlogs = blogs.filter(
-        (blog) => blog.id !== blogsID
-      );
+      const updatedBlogs = blogs.filter((blog) => blog.id !== blogsID);
       setBlogs(updatedBlogs);
       toast.success("Successfully deleted the blog");
     }
@@ -96,12 +87,10 @@ export default function Profile() {
   }
   return (
     <>
-      <section className="max-w-6xl mx-auto flex justify-center items-center flex-col">
+      <section className="max-w-6xl mx-auto flex justify center items-center flex-col">
         <h1 className="text-3xl text-center mt-6 font-bold">My Profile</h1>
-        <div className="w-full md:w-[50%] mt-6 px-3">
+        <div className="w-full :w-[50%] mt-6 px-3">
           <form>
-            {/* Name Input */}
-
             <input
               type="text"
               id="name"
@@ -112,19 +101,15 @@ export default function Profile() {
                 changeDetail && "bg-red-200 focus:bg-red-200"
               }`}
             />
-
-            {/* Email Input */}
-
             <input
-              type="email"
+              type="text"
               id="email"
               value={email}
               disabled
               className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out"
             />
-
-            <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg mb-6">
-              <p className="flex items-center ">
+            <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
+              <p className="flex items-center mb-6 ">
                 Do you want to change your name?
                 <span
                   onClick={() => {
@@ -133,12 +118,12 @@ export default function Profile() {
                   }}
                   className="text-red-600 hover:text-red-700 transition ease-in-out duration-200 ml-1 cursor-pointer"
                 >
-                  {changeDetail ? "Apply change" : "Edit"}
+                  {changeDetail ? "Save changes" : "Edit"}
                 </span>
               </p>
               <p
-                onClick={onLogout}
-                className="text-blue-600 hover:text-blue-800 transition duration-200 ease-in-out cursor-pointer"
+                onClick={onLogOut}
+                className="text-blue-600 hover:text-blue-800 transition-200 ease-in-out cursor-pointer"
               >
                 Sign out
               </p>

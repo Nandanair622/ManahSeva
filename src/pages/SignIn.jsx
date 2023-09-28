@@ -6,7 +6,7 @@ import GAuth from "../components/GAuth";
 import { signInWithEmailAndPassword, auth, getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
-export default function Signin() {
+export default function SignIn() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { email, password } = formData;
   const navigate = useNavigate();

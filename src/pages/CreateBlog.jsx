@@ -1,5 +1,5 @@
-import { useState } from "react";
-// import Spinner from "../components/Spinner";
+import React, { useState } from "react";
+import Spinner from "../components/Spinner";
 import { toast } from "react-toastify";
 import {
   getStorage,
@@ -12,21 +12,28 @@ import { v4 as uuidv4 } from "uuid";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 import { db } from "../firebase";
 import { useNavigate } from "react-router-dom";
+import ReactQuill, { Quill } from "react-quill";
+import "react-quill/dist/quill.snow.css"; // Import Quill styles
+
+// Register FontSize and FontStyle modules
+const FontSizeStyle = Quill.import("attributors/style/size");
+Quill.register(FontSizeStyle, true);
+
+const FontAttributor = Quill.import("attributors/class/font");
+Quill.register(FontAttributor, true);
 
 export default function CreateBlog() {
   const navigate = useNavigate();
   const auth = getAuth();
-   const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [formData, setFormData] = useState({
     title: "",
     content: "",
     images: {},
   });
-  const {
-   title,
-    content,
-    images,
-  } = formData;
+
+  const { title, content, images } = formData;
+
   function onChange(e) {
     let boolean = null;
     if (e.target.value === "true") {
@@ -50,6 +57,7 @@ export default function CreateBlog() {
       }));
     }
   }
+
   async function onSubmit(e) {
     e.preventDefault();
     setLoading(true);
@@ -69,27 +77,14 @@ export default function CreateBlog() {
         uploadTask.on(
           "state_changed",
           (snapshot) => {
-            // Observe state change events such as progress, pause, and resume
-            // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
             const progress =
               (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
             console.log("Upload is " + progress + "% done");
-            switch (snapshot.state) {
-              case "paused":
-                console.log("Upload is paused");
-                break;
-              case "running":
-                console.log("Upload is running");
-                break;
-            }
           },
           (error) => {
-            // Handle unsuccessful uploads
             reject(error);
           },
           () => {
-            // Handle successful uploads on complete
-            // For instance, get the download URL: https://firebasestorage.googleapis.com/...
             getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) => {
               resolve(downloadURL);
             });
@@ -111,7 +106,7 @@ export default function CreateBlog() {
 
     const formDataCopy = {
       ...formData,
-      imgUrls, // Now imgUrls will be an array, even if it's empty
+      imgUrls,
       timestamp: serverTimestamp(),
       userRef: auth.currentUser.uid,
     };
@@ -121,16 +116,17 @@ export default function CreateBlog() {
       const docRef = await addDoc(collection(db, "blogs"), formDataCopy);
       setLoading(false);
       toast.success("Blog created");
-      navigate(`/blogs/${docRef.id}`);
+      navigate(`/${docRef.id}`);
     } catch (error) {
       setLoading(false);
       toast.error("Error creating blog: " + error.message);
     }
   }
 
-  // if (loading) {
-  //   return <Spinner />;
-  // }
+  if (loading) {
+    return <Spinner />;
+  }
+
   return (
     <main className="max-w-md px-2 mx-auto">
       <h1 className="text-3xl text-center mt-6 font-bold">Create a Blog</h1>
@@ -141,7 +137,7 @@ export default function CreateBlog() {
           id="title"
           value={title}
           onChange={onChange}
-          placeholder="title"
+          placeholder="Title"
           maxLength="32"
           minLength="10"
           required
@@ -149,22 +145,33 @@ export default function CreateBlog() {
         />
 
         <p className="text-lg font-semibold">Blog Content</p>
-        <textarea
-          type="text"
-          id="content"
+        <ReactQuill
           value={content}
-          onChange={onChange}
+          onChange={(value) =>
+            setFormData((prevState) => ({
+              ...prevState,
+              content: value,
+            }))
+          }
+          modules={{
+            toolbar: [
+              [{ header: "1" }, { header: "2" }, { font: [] }],
+              [{ list: "bullet" }, { list: "ordered" }],
+              ["bold", "italic", "underline"],
+              ["link"],
+              [{ size: ["10px", "12px", "16px", "18px", "24px", "32px"] }], // Font size options
+            ],
+          }}
           placeholder="Type Content here"
-          required
           style={{
-            width: "100%",
-            minHeight: "300px", // Adjust the minimum height as needed
-            fontSize: "18px", // Adjust the font size as needed
-            padding: "10px",
-            color: "#333", // Text color
-            backgroundColor: "#fff",
+            minHeight: "300px",
+            fontSize: "18px",
             border: "1px solid #ccc",
             borderRadius: "5px",
+            width: "100%",
+            padding: "10px",
+            color: "#333",
+            backgroundColor: "#fff",
             transition:
               "border-color 0.2s ease-in-out, box-shadow 0.2s ease-in-out",
           }}
