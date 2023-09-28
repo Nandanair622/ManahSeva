@@ -1,59 +1,40 @@
-import "./App.css";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import React from "react";
+import Navbar from "./components/Navbar";
 import Home from "./pages/Home";
-import CreatePost from "./pages/CreateBlog";
-import SignIn from "./pages/SignIn";
-import SignUp from "./pages/SignUp";
-import ForgotPsw from "./pages/ForgotPsw";
-import Header from "./components/Header";
-import Profile from "./pages/Profile";
-import { ToastContainer } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
-import CreateBlog from "./pages/CreateBlog";
-import PrivateRoute from "./components/PrivateRoute";
-import EditBlog from "./pages/EditBlog";
-import ReadBlog from "./pages/ReadBlog";
-import Footer from "./components/Footer";
+import Diary from "./pages/Diary";
+import Login from "./pages/Login";
+import Signup from "./pages/Signup";
+import About from "./pages/About";
+import Chat from "./components/Chat";
+import {auth} from './firebase';
+import {useAuthState} from 'react-firebase-hooks/auth';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+
+
 function App() {
+  const [user] = useAuthState(auth);
   return (
-    <>
-      <Router>
-        <Header />
+    <Router>
+      <div>
+        <Navbar />
         <Routes>
-          <Route path="/" element={<Home />}></Route>
-          <Route path="/CreatePost" element={<CreatePost />}></Route>
-          <Route path="/SignIn" element={<SignIn />}></Route>
-          <Route path="/SignUp" element={<SignUp />}></Route>
-          <Route path="/ForgotPsw" element={<ForgotPsw />}></Route>
-          <Route path="/Profile" element={<Profile />}></Route>
-          <Route path="/CreateBlog" element={<CreateBlog />}></Route>
-          <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route>
-          <Route path="/:blogId" element={<ReadBlog />}></Route>
-          {/* <Route path="/CreateBlog" element={<PrivateRoute />}>
-            <Route path="/CreateBlog" element={<CreateBlog />}></Route>
-          </Route> */}
-          {/* <Route path="/EditBlog" element={<PrivateRoute />}>
-            <Route
-              path="/EditBlog/:blogId"
-              element={<EditBlog />}
-            ></Route>
-          </Route> */}
+          <Route path="/" element={<Home />} />
+          <Route path="/about" element={<About />} />
+
+          {user ? (
+            <>
+              <Route path="/diary" element={<Diary />} />
+              <Route path="/community" element={<Chat />} />
+            </>
+          ) : (
+            <Route path="/login" element={<Login />} />
+          )}
+
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
-        <Footer />
-      </Router>
-      <ToastContainer
-        position="bottom-center"
-        autoClose={5000}
-        hideProgressBar={false}
-        newestOnTop={false}
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-        theme="dark"
-      />
-    </>
+      </div>
+    </Router>
   );
 }
 
