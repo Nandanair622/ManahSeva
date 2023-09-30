@@ -67,7 +67,7 @@ export default function ReadBlog() {
                 backgroundImage: `url(${url})`,
                 backgroundSize: "cover",
                 backgroundPosition: "center",
-                height: "300px",
+                height: "500px",
                 width: "3000px",
               }}
             ></div>

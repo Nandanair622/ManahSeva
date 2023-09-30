@@ -37,7 +37,7 @@ export default function Header() {
 
 
   return (
-    <div className="bg-FFCC70 border-b shadow-sm sticky top-0 z-40">
+    <div className="bg-213555 border-b shadow-sm sticky top-0 z-40">
       <header className="flex justify-between items-center px-3 max-w-6xl mx-auto">
         <div>
           <img
@@ -50,18 +50,28 @@ export default function Header() {
         <div>
           <ul className="flex space-x-10">
             <li
-              className={`cursor-pointer py-3 text-xl font-semibold text-black border-b-[3px] ${
-                location.pathname === "/" ? "text-black border-b-red-500" : ""
+              className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
+                location.pathname === "/" ? "text-D8C4B6 border-b-red-500" : ""
               }`}
               onClick={() => navigate("/")}
             >
               Home
             </li>
             <li
-              className={`cursor-pointer py-3 text-xl font-semibold text-black border-b-[3px] ${
+              className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
+                location.pathname === "/Blog"
+                  ? "text-D8C4B6 border-b-red-500"
+                  : ""
+              }`}
+              onClick={() => navigate("/Blog")}
+            >
+              Blog
+            </li>
+            <li
+              className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
                 location.pathname === "/SignIn" ||
                 location.pathname === "/Profile"
-                  ? "text-black border-b-red-500"
+                  ? "text-D8C4B6 border-b-red-500"
                   : ""
               }`}
               onClick={handleHomeClick}

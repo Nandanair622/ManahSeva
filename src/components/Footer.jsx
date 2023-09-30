@@ -3,7 +3,7 @@ import { FaFacebook, FaTwitter, FaInstagram } from "react-icons/fa";
 
 const Footer = () => {
   return (
-    <footer className="bg-gray-800 text-white py-8">
+    <footer className="bg-213555 text-white py-8 sticky">
       <div className="container mx-auto flex justify-center items-center">
         <div className="mr-6">
           <a
@@ -37,8 +37,7 @@ const Footer = () => {
         </div>
       </div>
       <div className="text-center mt-4">
-        &copy; {new Date().getFullYear()} ManahSeva. All Rights
-        Reserved.
+        &copy; {new Date().getFullYear()} ManahSeva. All Rights Reserved.
       </div>
     </footer>
   );

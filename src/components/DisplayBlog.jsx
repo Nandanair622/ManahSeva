@@ -18,7 +18,7 @@ export default function DisplayBlog({ blog, id, onEdit, onDelete }) {
           {blog.timestamp?.toDate()}
         </Moment>
 
-        <p className="font-semibold m-0 text-l truncate">{blog.title}</p>
+        <p className="font-semibold m-0 text-m truncate">{blog.title}</p>
 
         <br />
       </Link>

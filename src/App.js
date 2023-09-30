@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CreateBlog from "./pages/CreateBlog";
+import Blog from "./pages/Blog"
 import PrivateRoute from "./components/PrivateRoute";
 import EditBlog from "./pages/EditBlog";
 import ReadBlog from "./pages/ReadBlog";
@@ -27,7 +28,7 @@ function App() {
           <Route path="/SignUp" element={<SignUp />}></Route>
           <Route path="/ForgotPsw" element={<ForgotPsw />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
-          {/* <Route path="/CreateBlog" element={<CreateBlog />}></Route> */}
+          <Route path="/Blog" element={<Blog />}></Route> 
           {/* <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route> */}
           <Route path="/:blogId" element={<ReadBlog />}></Route>
           <Route path="/CreateBlog" element={<PrivateRoute />}>
