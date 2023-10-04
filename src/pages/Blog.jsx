@@ -86,6 +86,135 @@ export default function Blog() {
             </ul>
           </div>
         )}
+        <h2 className="px-3 text-3xl text-center mt-6 font-bold">
+          Visual Wellness
+        </h2>
+        <div class="flex justify-center space-x-8">
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/BpzVvUGfJeA?si=tRpuzdKh-WO-QOVA"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/wOGqlVqyvCM?si=mQVGkvuNiWE766zX"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/db3K8b3ftaY?si=fDMsRY3nQFcE0yjv"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <div class="flex justify-center space-x-8">
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/_5OkC09xP34?si=KX7iZpTYD9yMNZoA"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/7EX1Xnvvk5c?si=XCVZyyitInlmhX5K"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+          <iframe
+            width="560"
+            height="315"
+            src="https://www.youtube.com/embed/iNyUmbmQQZg?si=gznugUC45hg1g6yz"
+            title="YouTube video player"
+            frameborder="0"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+            allowfullscreen
+          ></iframe>
+        </div>
+        <h2 className="px-3 text-3xl text-center mt-6 font-bold">
+          Harmony for the Mind
+        </h2>
+        <div class="flex justify-center space-x-8">
+          <iframe
+            class="rounded-lg"
+            src="https://open.spotify.com/embed/album/4WJlT8rSyf9nf0YrdKriSO?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            frameBorder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+          <iframe
+            class="rounded-lg"
+            src="https://open.spotify.com/embed/show/2BLdPSFfzWaYKiXYV0Nqvo?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            frameBorder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+          <iframe
+            class="rounded-lg"
+            src="https://open.spotify.com/embed/episode/6Lei7wvK0bDVCajZHkkWqn?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            frameBorder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+        </div>
+        <div class="flex justify-center space-x-8">
+          <iframe
+            class="rounded-lg"
+            src="https://open.spotify.com/embed/episode/4BNGWe69Pw8k1Q9EIQtzGI?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            frameBorder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+          <iframe
+            class="rounded-lg"
+            src="https://open.spotify.com/embed/show/2kH3ec1ljTia7VmwYsm8Xt?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            frameBorder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+          <iframe
+            class="rounded-lg"
+            src="https://open.spotify.com/embed/show/4298EkFJWEK6VAxKARB7bS?utm_source=generator&theme=0"
+            width="100%"
+            height="352"
+            frameBorder="0"
+            allowfullscreen=""
+            allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+            loading="lazy"
+          ></iframe>
+        </div>
+        <div></div>
       </div>
     </div>
   );

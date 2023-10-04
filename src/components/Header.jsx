@@ -65,7 +65,7 @@ export default function Header() {
               }`}
               onClick={() => navigate("/Blog")}
             >
-              Blog
+              MindHub
             </li>
             <li
               className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
