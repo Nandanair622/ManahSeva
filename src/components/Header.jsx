@@ -5,12 +5,13 @@ import { getAuth, onAuthStateChanged } from "firebase/auth";
 
 export default function Header() {
   const [pageState, setPageState] = useState("Sign In");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
   const location = useLocation();
   const navigate = useNavigate();
   const auth = getAuth();
 
   const handleHomeClick = () => {
-    if (pageState === "Profile") {
+    if (isLoggedIn) {
       // User is logged in, navigate to the Profile page
       navigate("/Profile");
     } else {
@@ -24,8 +25,10 @@ export default function Header() {
     const unsubscribe = onAuthStateChanged(auth, (user) => {
       if (user) {
         setPageState("Profile");
+        setIsLoggedIn(true);
       } else {
         setPageState("Sign In");
+        setIsLoggedIn(false);
       }
     });
 
@@ -34,7 +37,6 @@ export default function Header() {
       unsubscribe();
     };
   }, [auth]);
-
 
   return (
     <div className="bg-213555 border-b shadow-sm sticky top-0 z-40">
@@ -67,6 +69,18 @@ export default function Header() {
             >
               MindHub
             </li>
+            {isLoggedIn && (
+              <li
+                className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
+                  location.pathname === "/Chat"
+                    ? "text-D8C4B6 border-b-red-500"
+                    : ""
+                }`}
+                onClick={() => navigate("/Chat")}
+              >
+                Community
+              </li>
+            )}
             <li
               className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
                 location.pathname === "/SignIn" ||

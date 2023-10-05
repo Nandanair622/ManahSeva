@@ -4,20 +4,20 @@ import { getAuth } from "firebase/auth";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
 
 const style = {
-  form: `h-14 w-2/3 max-w-[1024px]  flex text-xl absolute bottom-0`,
-  input: `w-full text-xl p-3 bg-gray-900 text-white outline-none border-none`,
-  button: `w-[20%] bg-green-500`,
+  form: `h-14 w-full flex text-xl`, 
+  input: `h-14 w-[80%] text-xl p-3 bg-gray-900 text-white outline-none border-none`,
+  button: `h-14 w-[20%] bg-green-500`,
 };
 
 const SendMessage = ({ scroll }) => {
-  const [input, setInput] = useState("");
+  const [formValue, setFormValue] = useState('');
   const auth = getAuth();
 
   const sendMessage = async (e) => {
     e.preventDefault();
-    if (input === "") {
-      alert("Please enter a valid message");
-      return;
+    if (formValue === '') {
+        alert('Please enter a valid message')
+        return
     }
 
     // Get the current user
@@ -29,17 +29,15 @@ const SendMessage = ({ scroll }) => {
       try {
         // Add the message to Firestore
         await addDoc(collection(db, "messages"), {
-          text: input,
+          text: formValue,
           name: displayName,
           userRef: uid, // Assuming you want to store the user's UID
           timestamp: serverTimestamp(),
         });
 
         // Clear the input field
-        setInput("");
+        setFormValue('');
 
-        // Scroll to the latest message
-        scroll.current.scrollIntoView({ behavior: "smooth" });
       } catch (error) {
         console.error("Error sending message: ", error);
       }
@@ -47,19 +45,11 @@ const SendMessage = ({ scroll }) => {
   };
 
   return (
-    <div className="w-2/3">
-      <form onSubmit={sendMessage} className={style.form}>
-        <input
-          value={input}
-          onChange={(e) => setInput(e.target.value)}
-          className={style.input}
-          type="text"
-          placeholder="Message"
-        />
-        <button className={style.button} type="submit">
-          Send
-        </button>
-      </form>
+    <div >
+    <form onSubmit={sendMessage} className={style.form} >
+      <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" className={style.input}/>
+      <button type="submit" disabled={!formValue} className={style.button}>Submit</button>
+    </form>
     </div>
   );
 };

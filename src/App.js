@@ -15,7 +15,8 @@ import PrivateRoute from "./components/PrivateRoute";
 import EditBlog from "./pages/EditBlog";
 import ReadBlog from "./pages/ReadBlog";
 import Footer from "./components/Footer";
-import Chat from "./components/Chat"
+import ChatContainer from "./components/ChatContainer";
+
 function App() {
   return (
     <>
@@ -39,7 +40,7 @@ function App() {
           </Route>
 
           <Route path="/Chat" element={<PrivateRoute />}>
-            <Route path="/Chat" element={<Chat />}></Route>
+            <Route path="/Chat" element={<ChatContainer />}></Route>
           </Route>
         </Routes>
         <Footer />
