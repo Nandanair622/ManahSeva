@@ -2,11 +2,12 @@ import React, { useState } from "react";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
 import { addDoc, collection, serverTimestamp } from "firebase/firestore";
+import {BsFillSendFill} from "react-icons/bs";
 
 const style = {
   form: `h-14 w-full flex text-xl`, 
-  input: `h-14 w-[80%] text-xl p-3 bg-gray-900 text-white outline-none border-none`,
-  button: `h-14 w-[20%] bg-green-500`,
+  input: `h-14 w-[90%] text-xl p-3 bg-213555 text-white outline-none border-none`,
+  button: `h-14 w-[10%] bg-red-400 flex items-center justify-center`,
 };
 
 const SendMessage = ({ scroll }) => {
@@ -31,7 +32,7 @@ const SendMessage = ({ scroll }) => {
         await addDoc(collection(db, "messages"), {
           text: formValue,
           name: displayName,
-          userRef: uid, // Assuming you want to store the user's UID
+          userRef: uid, 
           timestamp: serverTimestamp(),
         });
 
@@ -48,7 +49,7 @@ const SendMessage = ({ scroll }) => {
     <div >
     <form onSubmit={sendMessage} className={style.form} >
       <input value={formValue} onChange={(e) => setFormValue(e.target.value)} placeholder="say something nice" className={style.input}/>
-      <button type="submit" disabled={!formValue} className={style.button}>Submit</button>
+      <button type="submit" disabled={!formValue} className={style.button}><BsFillSendFill className="mr-2 text-xl" />  </button>
     </form>
     </div>
   );

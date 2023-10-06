@@ -12,7 +12,7 @@ const style = {
   timestamp: 'mb-[-4rem]  text-gray-600 text-xs',
 };
 
-const Message = ({ message, userEmail,}) => {
+const Message = ({ message, userEmail, uid }) => {
   const [isBullying, setIsBullying] = useState(false);
   const ref = useRef();
 
@@ -37,10 +37,10 @@ const Message = ({ message, userEmail,}) => {
   const userId = auth.currentUser.uid;
 
   const messageClass = 
-    message.uid === userId
+    message.userRef === userId
     ? `${style.sent}`
     : `${style.received}`;
-
+    
   return (
     <div ref={ref}>
       <div className={`${style.message} ${messageClass}`}>

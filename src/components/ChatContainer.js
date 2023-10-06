@@ -10,7 +10,7 @@ const style = {
   },
   container: {
     border: '2px solid black',
-    backgroundColor: '#a7bcff',
+    backgroundColor: '#D8C4B6',
     borderRadius: '10px',
     width: '95%',
     height: '90%',

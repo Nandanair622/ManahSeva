@@ -27,7 +27,7 @@ const Messages = () => {
 
   const auth = getAuth();
   const userId = auth.currentUser.uid;
-
+  
   return (
     <div style={style.main}>
       {messages &&
