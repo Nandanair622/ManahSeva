@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import checkForBullying from "../bullyDetection";
 import { getAuth } from "firebase/auth"; 
 import sendBullyWarningEmail from '../email'
+import { db } from "../firebase";
+import { deleteDoc, doc, collection, getDocs, query, where } from "firebase/firestore";
 
 
 const style = {
@@ -12,8 +14,9 @@ const style = {
   timestamp: 'mb-[-4rem]  text-gray-600 text-xs',
 };
 
-const Message = ({ message, userEmail, uid }) => {
+const Message = ({ message, userEmail }) => {
   const [isBullying, setIsBullying] = useState(false);
+  const [emailSent, setEmailSent] = useState(false);
   const ref = useRef();
 
   useEffect(() => {
@@ -21,17 +24,38 @@ const Message = ({ message, userEmail, uid }) => {
   }, [message]);
 
   useEffect(() => {
+    
     const checkBullying = async () => {
       const detectedAsBullying = await checkForBullying(message.text);
       setIsBullying(detectedAsBullying);
 
+      if (detectedAsBullying && !emailSent) { // Check if bullying is detected and the email hasn't been sent yet
+          sendBullyWarningEmail(userEmail);
+          setEmailSent(true); // Set the emailSent state to true to indicate that the email has been sent
+        }
+
       if (detectedAsBullying) {
-        sendBullyWarningEmail(userEmail);
+        try {
+        // Query the Firestore collection to find documents with matching content
+        const messagesRef = collection(db, "messages");
+        const q = query(messagesRef, where("text", "==", message.text));
+        const querySnapshot = await getDocs(q);
+        
+        // Iterate over the matching documents and delete them
+        querySnapshot.forEach(async (doc) => {
+          await deleteDoc(doc.ref);
+          console.log("Message deleted because it contains bullying content.");
+        });
+      } catch (error) {
+        console.error("Error deleting message:", error);
       }
+    }
     };
 
     checkBullying();
-  }, [message.text, userEmail]);
+  }, [message.id, message.text, userEmail]);
+
+  
 
   const auth = getAuth();
   const userId = auth.currentUser.uid;

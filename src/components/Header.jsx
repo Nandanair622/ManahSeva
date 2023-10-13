@@ -69,6 +69,7 @@ export default function Header() {
             >
               MindHub
             </li>
+            
             {isLoggedIn && (
               <li
                 className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
@@ -81,6 +82,16 @@ export default function Header() {
                 Community
               </li>
             )}
+            <li
+              className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
+                location.pathname === "/ContactUs"
+                  ? "text-D8C4B6 border-b-red-500"
+                  : ""
+              }`}
+              onClick={() => navigate("/ContactUs")}
+            >
+              Contact Us
+            </li>
             <li
               className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
                 location.pathname === "/SignIn" ||

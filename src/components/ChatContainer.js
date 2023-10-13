@@ -14,7 +14,7 @@ const style = {
     borderRadius: '10px',
     width: '95%',
     height: '90%',
-    display: 'flex',
+    display: 'flex',  
     overflow: 'hidden',
   },
 };

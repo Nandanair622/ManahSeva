@@ -4,7 +4,16 @@ import { TbUsersGroup } from "react-icons/tb";
 import { TbMessageChatbot } from "react-icons/tb";
 import { TfiWrite } from "react-icons/tfi";
 import { Link } from "react-router-dom";
+import ChatBot from "../components/ChatBot";
+import { useState } from "react";
+import {SiChatbot} from "react-icons/si"
+
 export default function Home() {
+  const [isChatBotOpen, setIsChatBotOpen] = useState(false);
+  const toggleChatBot = () => {
+    setIsChatBotOpen(!isChatBotOpen);
+  };
+
   return (
     <>
       {" "}
@@ -303,6 +312,16 @@ export default function Home() {
         </div>
       </div>
       {/* <!-- ====== Testimonials Section end --> */}
+      {isChatBotOpen || (
+        <button
+          className="fixed bottom-5 right-5 bg-blue-500 hover:bg-blue-600 text-black p-3 rounded-full shadow-lg"
+          onClick={toggleChatBot}
+        >
+          <SiChatbot className="text-3xl text-white"/>
+        </button>
+      )}
+
+      {isChatBotOpen && <ChatBot isOpen={true} toggleChatBot={toggleChatBot} />}
     </>
   );
 }

@@ -16,6 +16,7 @@ import EditBlog from "./pages/EditBlog";
 import ReadBlog from "./pages/ReadBlog";
 import Footer from "./components/Footer";
 import ChatContainer from "./components/ChatContainer";
+import ContactUs from "./pages/ContactUs";
 
 function App() {
   return (
@@ -29,7 +30,8 @@ function App() {
           <Route path="/SignUp" element={<SignUp />}></Route>
           <Route path="/ForgotPsw" element={<ForgotPsw />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
-          <Route path="/Blog" element={<Blog />}></Route> 
+          <Route path="/Blog" element={<Blog />}></Route>
+          <Route path="/ContactUs" element={<ContactUs/>}></Route> 
           {/* <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route> */}
           <Route path="/:blogId" element={<ReadBlog />}></Route>
           <Route path="/CreateBlog" element={<PrivateRoute />}>
