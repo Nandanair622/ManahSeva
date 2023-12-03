@@ -17,6 +17,7 @@ import ReadBlog from "./pages/ReadBlog";
 import Footer from "./components/Footer";
 import ChatContainer from "./components/ChatContainer";
 import ContactUs from "./pages/ContactUs";
+import Dairy from "./components/Dairy";
 
 function App() {
   return (
@@ -43,6 +44,10 @@ function App() {
 
           <Route path="/Chat" element={<PrivateRoute />}>
             <Route path="/Chat" element={<ChatContainer />}></Route>
+          </Route>
+
+          <Route path="/Dairy" element={<PrivateRoute />}>
+            <Route path="/Dairy" element={<Dairy />}></Route>
           </Route>
         </Routes>
         <Footer />
