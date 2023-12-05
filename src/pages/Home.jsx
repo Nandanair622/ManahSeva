@@ -6,7 +6,7 @@ import { TfiWrite } from "react-icons/tfi";
 import { Link } from "react-router-dom";
 import ChatBot from "../components/ChatBot";
 import { useState } from "react";
-import {SiChatbot} from "react-icons/si"
+import { SiChatbot } from "react-icons/si";
 
 export default function Home() {
   const [isChatBotOpen, setIsChatBotOpen] = useState(false);
@@ -42,7 +42,6 @@ export default function Home() {
         </h2>
         <button class="mx-auto block bg-red-300 hover:bg-red-400 text-dark font-bold py-2 px-4  hover:border-red-400 rounded">
           <Link to="/SignIn" className="flex justify-center items-center">
-            
             Get Started
           </Link>
         </button>
@@ -317,10 +316,9 @@ export default function Home() {
           className="fixed bottom-5 right-5 bg-blue-500 hover:bg-blue-600 text-black p-3 rounded-full shadow-lg"
           onClick={toggleChatBot}
         >
-          <SiChatbot className="text-3xl text-white"/>
+          <SiChatbot className="text-3xl text-white" />
         </button>
       )}
-
       {isChatBotOpen && <ChatBot isOpen={true} toggleChatBot={toggleChatBot} />}
     </>
   );
