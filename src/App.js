@@ -17,7 +17,7 @@ import ReadBlog from "./pages/ReadBlog";
 import Footer from "./components/Footer";
 import ChatContainer from "./components/ChatContainer";
 import ContactUs from "./pages/ContactUs";
-import Dairy from "./components/Dairy";
+import Dairy from "./pages/Dairy";
 
 function App() {
   return (
@@ -50,7 +50,7 @@ function App() {
             <Route path="/Dairy" element={<Dairy />}></Route>
           </Route>
         </Routes>
-        <Footer />
+        {/* <Footer /> */}
       </Router>
       <ToastContainer
         position="bottom-center"

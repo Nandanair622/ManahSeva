@@ -1,9 +1,9 @@
-import React, { useState, useEffect } from 'react';
-import { Calendar, momentLocalizer } from 'react-big-calendar';
-import 'react-big-calendar/lib/css/react-big-calendar.css';
-import moment from 'moment';
-import { db } from '../firebase';
-import { getAuth } from "firebase/auth"; 
+import React, { useState, useEffect } from "react";
+import { Calendar, momentLocalizer } from "react-big-calendar";
+import "react-big-calendar/lib/css/react-big-calendar.css";
+import moment from "moment";
+import { db } from "../firebase";
+import { getAuth } from "firebase/auth";
 import {
   addDoc,
   collection,
@@ -15,50 +15,50 @@ import {
   query,
   where,
 } from "firebase/firestore";
-import Sentiment from 'sentiment';
-import Chart from 'chart.js/auto';
+import Sentiment from "sentiment";
+import Chart from "chart.js/auto";
 
 const localizer = momentLocalizer(moment);
 
 const Dairy = () => {
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [notes, setNotes] = useState([]);
-  const [inputNote, setInputNote] = useState('');
+  const [inputNote, setInputNote] = useState("");
   const [events, setEvents] = useState([]);
   const [showModal, setShowModal] = useState(false);
   const [selectedNote, setSelectedNote] = useState(null);
   const [monthOverallSentiment, setMonthOverallSentiment] = useState({
     score: 0,
-    category: 'Neutral',
+    category: "Neutral",
   });
   const [sentimentData, setSentimentData] = useState([]);
   const auth = getAuth();
-  
-  const handleDateChange = date => {
-  setSelectedDate(date);
 
-  // Check if a note exists for the selected date
-  const formattedDate = moment(date).format('YYYY-MM-DD');
-  const existingNote = notes.find(note => note.date === formattedDate);
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
 
-  if (existingNote) {
-    // If a note exists, set the inputNote state with the existing note's content
-    setInputNote(existingNote.content);
-  } else {
-    // If no note exists, clear the inputNote state
-    setInputNote('');
-  }
-};
+    // Check if a note exists for the selected date
+    const formattedDate = moment(date).format("YYYY-MM-DD");
+    const existingNote = notes.find((note) => note.date === formattedDate);
 
-const handleAddNote = async () => {
-  const formattedDate = moment(selectedDate).format('YYYY-MM-DD');
-  const existingNote = notes.find(note => note.date === formattedDate);
+    if (existingNote) {
+      // If a note exists, set the inputNote state with the existing note's content
+      setInputNote(existingNote.content);
+    } else {
+      // If no note exists, clear the inputNote state
+      setInputNote("");
+    }
+  };
 
-  // Sentiment Analysis
+  const handleAddNote = async () => {
+    const formattedDate = moment(selectedDate).format("YYYY-MM-DD");
+    const existingNote = notes.find((note) => note.date === formattedDate);
+
+    // Sentiment Analysis
     const sentiment = new Sentiment();
     const sentimentResult = sentiment.analyze(inputNote);
 
-    const notesRef = collection(db, 'notes');
+    const notesRef = collection(db, "notes");
     const noteData = {
       date: formattedDate,
       content: inputNote,
@@ -74,17 +74,17 @@ const handleAddNote = async () => {
       uid: auth.currentUser.uid,
     };
 
-  if (existingNote) {
-    // Update existing note
-    await updateDoc(doc(notesRef, existingNote.id), noteData);
-  } else {
-    // Add a new note
-    await addDoc(notesRef, noteData);
-  }
+    if (existingNote) {
+      // Update existing note
+      await updateDoc(doc(notesRef, existingNote.id), noteData);
+    } else {
+      // Add a new note
+      await addDoc(notesRef, noteData);
+    }
 
-  setInputNote('');
-  setShowModal(false); 
-  setSelectedNote(null);
+    setInputNote("");
+    setShowModal(false);
+    setSelectedNote(null);
   };
 
   const handleEditNote = async () => {
@@ -122,43 +122,43 @@ const handleAddNote = async () => {
   };
 
   const calculateMonthOverallSentiment = () => {
-  const selectedMonth = moment(selectedDate).month();
-  const selectedYear = moment(selectedDate).year();
-  const filteredNotes = notes.filter(note => {
-    const noteMonth = moment(note.date).month();
-    const noteYear = moment(note.date).year();
-    return noteMonth === selectedMonth && noteYear === selectedYear;
-  });
+    const selectedMonth = moment(selectedDate).month();
+    const selectedYear = moment(selectedDate).year();
+    const filteredNotes = notes.filter((note) => {
+      const noteMonth = moment(note.date).month();
+      const noteYear = moment(note.date).year();
+      return noteMonth === selectedMonth && noteYear === selectedYear;
+    });
 
-  const totalNotes = filteredNotes.length;
-  let totalSentimentScore = 0;
+    const totalNotes = filteredNotes.length;
+    let totalSentimentScore = 0;
 
-  filteredNotes.forEach(note => {
-    if (note.sentiment && typeof note.sentiment.score !== 'undefined') {
-      totalSentimentScore += note.sentiment.score;
+    filteredNotes.forEach((note) => {
+      if (note.sentiment && typeof note.sentiment.score !== "undefined") {
+        totalSentimentScore += note.sentiment.score;
+      }
+    });
+
+    const averageScore =
+      totalNotes === 0 ? 0 : totalSentimentScore / totalNotes;
+    const clampedScore = Math.max(-1, Math.min(1, averageScore));
+
+    let sentimentCategory;
+    if (clampedScore > 0.2) {
+      sentimentCategory = "Positive";
+    } else if (clampedScore < -0.2) {
+      sentimentCategory = "Negative";
+    } else {
+      sentimentCategory = "Neutral";
     }
-  });
 
-  const averageScore = totalNotes === 0 ? 0 : totalSentimentScore / totalNotes;
-  const clampedScore = Math.max(-1, Math.min(1, averageScore));
+    setMonthOverallSentiment({
+      score: clampedScore,
+      category: sentimentCategory,
+    });
+  };
 
-  let sentimentCategory;
-  if (clampedScore > 0.2) {
-    sentimentCategory = 'Positive';
-  } else if (clampedScore < -0.2) {
-    sentimentCategory = 'Negative';
-  } else {
-    sentimentCategory = 'Neutral';
-  }
-
-  setMonthOverallSentiment({
-    score: clampedScore,
-    category: sentimentCategory,
-  });
-};
-
-
-  const handleMonthChange = date => {
+  const handleMonthChange = (date) => {
     setSelectedDate(date);
   };
 
@@ -171,7 +171,6 @@ const handleAddNote = async () => {
   useEffect(() => {
     updateSentimentAndGraph();
   }, [selectedDate]);
-
 
   useEffect(() => {
     const fetchData = async () => {
@@ -204,37 +203,39 @@ const handleAddNote = async () => {
     fetchData();
   }, []);
 
-
   // Function to prepare sentiment data for the line chart
   const prepareSentimentData = () => {
-  const selectedMonth = moment(selectedDate).month(); // Get selected month (0-11)
-  const selectedYear = moment(selectedDate).year(); // Get selected year
-  const daysInMonth = moment(selectedDate).daysInMonth(); // Get the number of days in the selected month
-  const startDate = moment(selectedDate).startOf('month');
+    const selectedMonth = moment(selectedDate).month(); // Get selected month (0-11)
+    const selectedYear = moment(selectedDate).year(); // Get selected year
+    const daysInMonth = moment(selectedDate).daysInMonth(); // Get the number of days in the selected month
+    const startDate = moment(selectedDate).startOf("month");
 
-  const newData = [];
-  for (let i = 0; i < daysInMonth; i++) {
-    const currentDate = startDate.clone().add(i, 'days');
-    const formattedDate = currentDate.format('YYYY-MM-DD');
+    const newData = [];
+    for (let i = 0; i < daysInMonth; i++) {
+      const currentDate = startDate.clone().add(i, "days");
+      const formattedDate = currentDate.format("YYYY-MM-DD");
 
-    const existingNote = notes.find(
-      note =>
-        moment(note.date).month() === selectedMonth &&
-        moment(note.date).year() === selectedYear &&
-        note.date === formattedDate
-    );
+      const existingNote = notes.find(
+        (note) =>
+          moment(note.date).month() === selectedMonth &&
+          moment(note.date).year() === selectedYear &&
+          note.date === formattedDate
+      );
 
-    const sentimentScore = existingNote && existingNote.sentiment && typeof existingNote.sentiment.score !== 'undefined'
-      ? existingNote.sentiment.score
-      : 0;
+      const sentimentScore =
+        existingNote &&
+        existingNote.sentiment &&
+        typeof existingNote.sentiment.score !== "undefined"
+          ? existingNote.sentiment.score
+          : 0;
 
-    newData.push({
-      date: formattedDate,
-      score: sentimentScore,
-    });
-  }
-  setSentimentData(newData);
-};
+      newData.push({
+        date: formattedDate,
+        score: sentimentScore,
+      });
+    }
+    setSentimentData(newData);
+  };
 
   // Call prepareSentimentData when notes or selectedDate change
   useEffect(() => {
@@ -243,7 +244,7 @@ const handleAddNote = async () => {
 
   // Render the line chart using Chart.js
   useEffect(() => {
-    const ctx = document.getElementById('sentimentChart');
+    const ctx = document.getElementById("sentimentChart");
     let chartInstance = null;
 
     if (ctx && sentimentData.length > 0) {
@@ -253,16 +254,18 @@ const handleAddNote = async () => {
       }
 
       chartInstance = new Chart(ctx, {
-        type: 'line',
+        type: "line",
         data: {
-          labels: sentimentData.map(data => data.date),
-          datasets: [{
-            label: 'Sentiment Score',
-            data: sentimentData.map(data => data.score),
-            borderColor: 'blue',
-            backgroundColor: 'rgba(0, 0, 255, 0.1)',
-            borderWidth: 1,
-          }],
+          labels: sentimentData.map((data) => data.date),
+          datasets: [
+            {
+              label: "Sentiment Score",
+              data: sentimentData.map((data) => data.score),
+              borderColor: "blue",
+              backgroundColor: "rgba(0, 0, 255, 0.1)",
+              borderWidth: 1,
+            },
+          ],
         },
         options: {
           // Add chart options if needed
@@ -277,7 +280,6 @@ const handleAddNote = async () => {
       }
     };
   }, [sentimentData]);
-
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -375,9 +377,9 @@ const handleAddNote = async () => {
           onNavigate={(date) => handleMonthChange(date)} // Handle month change in the calendar
         />
         <h2>Overall Sentiment: {monthOverallSentiment.category}</h2>
-      <p>Average Score: {monthOverallSentiment.score}</p>
+        <p>Average Score: {monthOverallSentiment.score}</p>
 
-          <canvas id="sentimentChart" width="400" height="200"></canvas>
+        <canvas id="sentimentChart" width="400" height="200"></canvas>
       </div>
     </div>
   );
