@@ -85,13 +85,13 @@ export default function Header() {
             {isLoggedIn && (
               <li
                 className={`cursor-pointer py-3 text-xl font-semibold text-D8C4B6 border-b-[3px] ${
-                  location.pathname === "/Dairy"
+                  location.pathname === "/Diary"
                     ? "text-D8C4B6 border-b-red-500"
                     : ""
                 }`}
-                onClick={() => navigate("/Dairy")}
+                onClick={() => navigate("/Diary")}
               >
-                Dairy
+                Diary
               </li>
             )}
             <li

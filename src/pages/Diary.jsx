@@ -17,10 +17,13 @@ import {
 } from "firebase/firestore";
 import Sentiment from "sentiment";
 import Chart from "chart.js/auto";
+import { Doughnut } from "react-chartjs-2";
+import PieChart from "../components/PieChart";
 
 const localizer = momentLocalizer(moment);
 
-const Dairy = () => {
+const Diary = () => {
+  const [mostPositiveDay, setMostPositiveDay] = useState(null);
   const [selectedDate, setSelectedDate] = useState(new Date());
   const [notes, setNotes] = useState([]);
   const [inputNote, setInputNote] = useState("");
@@ -132,10 +135,19 @@ const Dairy = () => {
 
     const totalNotes = filteredNotes.length;
     let totalSentimentScore = 0;
-
+    let maxSentimentScore = -Infinity;
+    let positiveDay = null;
     filteredNotes.forEach((note) => {
       if (note.sentiment && typeof note.sentiment.score !== "undefined") {
         totalSentimentScore += note.sentiment.score;
+      }
+    });
+    filteredNotes.forEach((note) => {
+      if (note.sentiment && typeof note.sentiment.score !== "undefined") {
+        if (note.sentiment.score > maxSentimentScore) {
+          maxSentimentScore = note.sentiment.score;
+          positiveDay = note.date;
+        }
       }
     });
 
@@ -156,6 +168,7 @@ const Dairy = () => {
       score: clampedScore,
       category: sentimentCategory,
     });
+    setMostPositiveDay(positiveDay);
   };
 
   const handleMonthChange = (date) => {
@@ -261,8 +274,19 @@ const Dairy = () => {
             {
               label: "Sentiment Score",
               data: sentimentData.map((data) => data.score),
-              borderColor: "blue",
-              backgroundColor: "rgba(0, 0, 255, 0.1)",
+              borderColor: (context) => {
+                const score = context.dataset.data[context.dataIndex];
+                return score > 0 ? "green" : score < 0 ? "red" : "black";
+              },
+              backgroundColor: (context) => {
+                const score = context.dataset.data[context.dataIndex];
+                const alpha = Math.abs(score) / 100; // Adjust alpha based on score magnitude
+                return score > 0
+                  ? `rgba(0, 255, 0, ${alpha})`
+                  : score < 0
+                  ? `rgba(255, 0, 0, ${alpha})`
+                  : `rgba(255, 255, 0, ${alpha})`;
+              },
               borderWidth: 1,
             },
           ],
@@ -376,13 +400,53 @@ const Dairy = () => {
           onSelecting={(slotInfo) => handleDateChange(slotInfo.start)}
           onNavigate={(date) => handleMonthChange(date)} // Handle month change in the calendar
         />
-        <h2>Overall Sentiment: {monthOverallSentiment.category}</h2>
-        <p>Average Score: {monthOverallSentiment.score}</p>
+        <br />
 
-        <canvas id="sentimentChart" width="400" height="200"></canvas>
+        <div className="flex items-center mb-4">
+          <hr className="flex-grow border-b border-gray-300 mr-4" />
+          <span className="text-gray-500 font-semibold text-xl">
+            Mental Fitness
+          </span>
+          <hr className="flex-grow border-b border-gray-300 ml-4" />
+        </div>
+        <br />
+        <h2 className="text-2xl font-bold mb-2 text-center">
+          {monthOverallSentiment.category}
+        </h2>
+        <br />
+
+        <p className="text-gray-800  text-center">
+          Average Score: {monthOverallSentiment.score}
+        </p>
+
+        <p className=" text-gray-800  text-center">
+          Happiest Day of the Month:{" "}
+          {mostPositiveDay
+            ? moment(mostPositiveDay).format("DD-MM-YYYY")
+            : "N/A"}
+        </p>
+        <br />
+        <div className="flex">
+          <div className="w-3/4 mr-6 h-full">
+            <canvas
+              id="sentimentChart"
+              className="border border-gray-300 rounded bg-white"
+            ></canvas>
+          </div>
+          <div className="w-1/4 ml-6 h-full items-center">
+            <br />
+            <br />
+            <br />
+            <PieChart sentimentData={sentimentData} />
+          </div>
+        </div>
+
+        <br />
+        <br />
+        <br />
       </div>
     </div>
   );
 };
 
-export default Dairy;
+export default Diary;

@@ -10,14 +10,14 @@ import Profile from "./pages/Profile";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import CreateBlog from "./pages/CreateBlog";
-import Blog from "./pages/Blog"
+import Blog from "./pages/Blog";
 import PrivateRoute from "./components/PrivateRoute";
 import EditBlog from "./pages/EditBlog";
 import ReadBlog from "./pages/ReadBlog";
 import Footer from "./components/Footer";
 import ChatContainer from "./components/ChatContainer";
 import ContactUs from "./pages/ContactUs";
-import Dairy from "./pages/Dairy";
+import Diary from "./pages/Diary";
 
 function App() {
   return (
@@ -32,7 +32,7 @@ function App() {
           <Route path="/ForgotPsw" element={<ForgotPsw />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
           <Route path="/Blog" element={<Blog />}></Route>
-          <Route path="/ContactUs" element={<ContactUs/>}></Route> 
+          <Route path="/ContactUs" element={<ContactUs />}></Route>
           {/* <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route> */}
           <Route path="/:blogId" element={<ReadBlog />}></Route>
           <Route path="/CreateBlog" element={<PrivateRoute />}>
@@ -46,8 +46,8 @@ function App() {
             <Route path="/Chat" element={<ChatContainer />}></Route>
           </Route>
 
-          <Route path="/Dairy" element={<PrivateRoute />}>
-            <Route path="/Dairy" element={<Dairy />}></Route>
+          <Route path="/Diary" element={<PrivateRoute />}>
+            <Route path="/Diary" element={<Diary />}></Route>
           </Route>
         </Routes>
         {/* <Footer /> */}
