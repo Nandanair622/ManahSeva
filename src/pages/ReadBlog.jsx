@@ -7,6 +7,7 @@ import { db } from "../firebase";
 import { FaShareAlt } from "react-icons/fa";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import Footer from "../components/Footer";
 
 // Register FontSize and FontStyle modules
 const FontSizeStyle = Quill.import("attributors/style/size");
@@ -88,6 +89,7 @@ export default function ReadBlog() {
           }}
         />
       </div>
+      <Footer/>
     </main>
   );
 }

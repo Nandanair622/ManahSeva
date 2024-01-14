@@ -4,6 +4,7 @@ import { Link } from "react-router-dom";
 import GAuth from "../components/GAuth";
 import { toast } from "react-toastify";
 import { getAuth, sendPasswordResetEmail } from "firebase/auth";
+import Footer from "../components/Footer";
 export default function Forgotpsswd() {
   const [formData, setFormData] = useState({
     email: "",
@@ -85,6 +86,7 @@ export default function Forgotpsswd() {
           </form>
         </div>
       </div>
+      <Footer />
     </section>
   );
 }

@@ -11,6 +11,7 @@ import { db } from "../firebase";
 import { serverTimestamp, setDoc, doc } from "firebase/firestore";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Footer from "../components/Footer";
 export default function SignUp() {
   const [formData, setFormData] = useState({
     email: "",
@@ -138,6 +139,7 @@ export default function SignUp() {
           </form>
         </div>
       </div>
+      <Footer/>
     </section>
   );
 }

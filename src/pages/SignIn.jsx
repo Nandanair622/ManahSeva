@@ -6,6 +6,7 @@ import GAuth from "../components/GAuth";
 import { signInWithEmailAndPassword, auth, getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+import Footer from "../components/Footer";
 export default function SignIn() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { email, password } = formData;
@@ -114,6 +115,7 @@ export default function SignIn() {
           </form>
         </div>
       </div>
-    </section>
+      <Footer/>
+      </section>
   );
 }

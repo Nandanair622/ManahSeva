@@ -18,7 +18,9 @@ import Footer from "./components/Footer";
 import ChatContainer from "./components/ChatContainer";
 import ContactUs from "./pages/ContactUs";
 import Diary from "./pages/Diary";
-
+import MindPodcast from "./components/MindPodcast";
+import MindVideo from "./components/MindVideo";
+import MindBlog from "./components/MindBlog";
 function App() {
   return (
     <>
@@ -32,6 +34,9 @@ function App() {
           <Route path="/ForgotPsw" element={<ForgotPsw />}></Route>
           <Route path="/Profile" element={<Profile />}></Route>
           <Route path="/Blog" element={<Blog />}></Route>
+          <Route path="/MindPodcast" element={<MindPodcast />}></Route>
+          <Route path="/MindVideo" element={<MindVideo />}></Route>
+          <Route path="/MindBlog" element={<MindBlog />}></Route>
           <Route path="/ContactUs" element={<ContactUs />}></Route>
           {/* <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route> */}
           <Route path="/:blogId" element={<ReadBlog />}></Route>

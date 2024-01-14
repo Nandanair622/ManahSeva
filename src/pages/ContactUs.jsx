@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import emailjs from "emailjs-com";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import Footer from "../components/Footer";
 
 const ContactUs = () => {
   const [formData, setFormData] = useState({
@@ -153,6 +154,7 @@ const ContactUs = () => {
           </form>
         </div>
       </div>
+      <Footer/>
     </section>
   );
 };

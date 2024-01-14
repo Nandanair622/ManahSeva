@@ -16,6 +16,7 @@ import { db } from "../firebase";
 import { BsPencilSquare } from "react-icons/bs";
 import { Link } from "react-router-dom";
 import DisplayBlog from "../components/DisplayBlog";
+import Footer from "../components/Footer";
 export default function Profile() {
   const auth = getAuth();
   const navigate = useNavigate();
@@ -160,6 +161,7 @@ export default function Profile() {
           </>
         )}
       </div>
+      <Footer/>
     </>
   );
 }

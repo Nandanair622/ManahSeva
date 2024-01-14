@@ -21,6 +21,7 @@ import { db } from "../firebase";
 import { useNavigate, useParams } from "react-router-dom";
 import ReactQuill, { Quill } from "react-quill";
 import "react-quill/dist/quill.snow.css"; // Import Quill styles
+import Footer from "../components/Footer";
 
 // Register FontSize and FontStyle modules
 const FontSizeStyle = Quill.import("attributors/style/size");
@@ -228,6 +229,7 @@ export default function EditBlog() {
           Edit Blog
         </button>
       </form>
+      <Footer/>
     </main>
   );
 }

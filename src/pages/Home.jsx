@@ -7,7 +7,8 @@ import { Link } from "react-router-dom";
 import ChatBot from "../components/ChatBot";
 import { useState } from "react";
 import { SiChatbot } from "react-icons/si";
-
+import Footer from "../components/Footer";
+import { MdEditCalendar } from "react-icons/md";
 export default function Home() {
   const [isChatBotOpen, setIsChatBotOpen] = useState(false);
   const toggleChatBot = () => {
@@ -52,16 +53,7 @@ export default function Home() {
           <div class="flex flex-wrap -mx-4">
             <div class="w-full px-4">
               <div class="text-center mx-auto mb-12 lg:mb-20 max-w-[750px]">
-                <h2
-                  class="
-                  font-bold
-                  text-3xl
-                  sm:text-4xl
-                  md:text-[40px]
-                  text-dark
-                  mb-4
-                  "
-                >
+                <h2 class="font-bold text-3xl sm:text-4xl md:text-[40px] text-dark mb-4">
                   Empower Your Mental Well-being with Our Features
                 </h2>
               </div>
@@ -70,7 +62,7 @@ export default function Home() {
 
           <div class="flex flex-wrap -mx-4">
             {/* //feature 1 */}
-            <div className="w-full md:w-1/2 lg:w-1/3 px-4">
+            <div className="w-full md:w-1/2 px-4 mb-8">
               <div
                 className="
           p-10
@@ -84,6 +76,7 @@ export default function Home() {
           flex
           flex-col
           items-center
+          feature-card transform transition-transform hover:scale-105
         "
               >
                 <div
@@ -117,7 +110,7 @@ export default function Home() {
             </div>
             {/* //feature 2 */}
 
-            <div className="w-full md:w-1/2 lg:w-1/3 px-4">
+            <div className="w-full md:w-1/2 px-4 mb-8">
               <div
                 className="
           p-10
@@ -131,6 +124,7 @@ export default function Home() {
           flex
           flex-col
           items-center
+          feature-card transform transition-transform hover:scale-105
         "
               >
                 <div
@@ -163,7 +157,7 @@ export default function Home() {
               </div>
             </div>
             {/* //feature 4 */}
-            <div className="w-full md:w-1/2 lg:w-1/3 px-4">
+            <div className="w-full md:w-1/2 px-4 mb-8">
               <div
                 className="
           p-10
@@ -177,6 +171,7 @@ export default function Home() {
           flex
           flex-col
           items-center
+          feature-card transform transition-transform hover:scale-105
         "
               >
                 <div
@@ -205,6 +200,52 @@ export default function Home() {
                   system that truly understands.It's a safe space where we
                   uplift each other, break stigmas, and foster a community that
                   cares.
+                </p>
+              </div>
+            </div>
+
+            <div className="w-full md:w-1/2 px-4 mb-8">
+              <div
+                className="
+          p-10
+          md:px-7
+          xl:px-10
+          rounded-[20px]
+          bg-white
+          shadow-md
+          hover:shadow-lg
+          mb-8
+          flex
+          flex-col
+          items-center
+          feature-card transform transition-transform hover:scale-105
+        "
+              >
+                <div
+                  className="
+            w-[70px]
+            h-[70px]
+            flex
+          flex-col
+          items-center
+            
+            justify-center
+            bg-4F709C
+            rounded-2xl
+            mb-8
+          "
+                >
+                  <MdEditCalendar size={32} color="white" />
+                </div>
+                <h4 className="font-semibold text-xl text-dark mb-3">
+                  Personal Diary - Reflect, Express, and Grow
+                </h4>
+                <p className="text-body-color text-center">
+                  Capture your daily experiences, emotions, and thoughts in your
+                  personal diary.Our tool analyzes your entries, providing
+                  valuable insights into your emotional well-being.Receive
+                  tailored wellness tips based on your sentiments and download
+                  comprehensive reports to track your emotional journey.
                 </p>
               </div>
             </div>
@@ -320,6 +361,7 @@ export default function Home() {
         </button>
       )}
       {isChatBotOpen && <ChatBot isOpen={true} toggleChatBot={toggleChatBot} />}
+      <Footer />
     </>
   );
 }

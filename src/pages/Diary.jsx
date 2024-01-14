@@ -19,7 +19,8 @@ import Sentiment from "sentiment";
 import Chart from "chart.js/auto";
 import { Doughnut } from "react-chartjs-2";
 import PieChart from "../components/PieChart";
-
+import Recommendations from "../components/Recommendations";
+import { Link } from "react-router-dom";
 const localizer = momentLocalizer(moment);
 
 const Diary = () => {
@@ -292,7 +293,7 @@ const Diary = () => {
           ],
         },
         options: {
-          // Add chart options if needed
+          
         },
       });
     }
@@ -304,6 +305,7 @@ const Diary = () => {
       }
     };
   }, [sentimentData]);
+
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -373,7 +375,6 @@ const Diary = () => {
             </div>
           </div>
         )}
-
         <Calendar
           localizer={localizer}
           events={events}
@@ -401,7 +402,6 @@ const Diary = () => {
           onNavigate={(date) => handleMonthChange(date)} // Handle month change in the calendar
         />
         <br />
-
         <div className="flex items-center mb-4">
           <hr className="flex-grow border-b border-gray-300 mr-4" />
           <span className="text-gray-500 font-semibold text-xl">
@@ -414,11 +414,9 @@ const Diary = () => {
           {monthOverallSentiment.category}
         </h2>
         <br />
-
         <p className="text-gray-800  text-center">
           Average Score: {monthOverallSentiment.score}
         </p>
-
         <p className=" text-gray-800  text-center">
           Happiest Day of the Month:{" "}
           {mostPositiveDay
@@ -440,7 +438,31 @@ const Diary = () => {
             <PieChart sentimentData={sentimentData} />
           </div>
         </div>
+        <br />
+        {/* Display recommendations based on sentiment category */}
 
+        <Recommendations monthOverallSentiment={monthOverallSentiment} />
+
+        <p className="text-xl  mb-4 text-gray-700 text-center mt-6">
+          Explore our{" "}
+          <Link to="/Blog" className="text-blue-500 hover:underline">
+            MindHub
+          </Link>{" "}
+          page for a wealth of resources.
+          <br /> Discover insightful{" "}
+          <Link to="/MindBlog" className="text-blue-500 hover:underline">
+            blogs
+          </Link>
+          , thought-provoking{" "}
+          <Link to="/MindVideo" className="text-blue-500 hover:underline">
+            videos
+          </Link>
+          , and engaging{" "}
+          <Link to="/MindPodcast" className="text-blue-500 hover:underline">
+            podcasts
+          </Link>
+          , all centered around Mental Health Awareness.
+        </p>
         <br />
         <br />
         <br />
