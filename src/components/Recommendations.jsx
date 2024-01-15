@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-
+import { toast } from "react-toastify";
 const Recommendations = ({ monthOverallSentiment }) => {
   const [recommendations, setRecommendations] = useState([]);
 
@@ -30,6 +30,7 @@ const Recommendations = ({ monthOverallSentiment }) => {
         "Practice deep breathing exercises for relaxation and stress relief.",
         "Engage in activities that bring you a sense of calm and tranquility.",
       ],
+      "-": ["Please make entries in Diary to receive wellness tips."],
     };
 
     return recommendationMap[category] || [];
@@ -42,6 +43,12 @@ const Recommendations = ({ monthOverallSentiment }) => {
       monthOverallSentiment.category
     );
     setRecommendations(currentRecommendations);
+    // Display toast message if category is "-"
+    if (monthOverallSentiment.category === "-") {
+      toast.warning(
+        "Please make entries in the Diary to review your mental health journey."
+      );
+    }
   }, [monthOverallSentiment.category]);
 
   return (

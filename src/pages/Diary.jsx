@@ -157,7 +157,9 @@ const Diary = () => {
     const clampedScore = Math.max(-1, Math.min(1, averageScore));
 
     let sentimentCategory;
-    if (clampedScore > 0.2) {
+    if (clampedScore == 0)
+      sentimentCategory="-"
+    else if (clampedScore > 0.2) {
       sentimentCategory = "Positive";
     } else if (clampedScore < -0.2) {
       sentimentCategory = "Negative";
@@ -186,36 +188,43 @@ const Diary = () => {
     updateSentimentAndGraph();
   }, [selectedDate]);
 
-  useEffect(() => {
-    const fetchData = async () => {
-      const notesRef = collection(db, "notes");
-      const userQuery = query(
-        notesRef,
-        where("uid", "==", auth.currentUser.uid)
-      );
-      const unsubscribe = onSnapshot(userQuery, (snapshot) => {
-        const notesData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setNotes(notesData);
+ useEffect(() => {
+   const fetchData = async () => {
+     const notesRef = collection(db, "notes");
+     const userQuery = query(
+       notesRef,
+       where("uid", "==", auth.currentUser.uid)
+     );
+     const unsubscribe = onSnapshot(userQuery, (snapshot) => {
+       const notesData = snapshot.docs.map((doc) => ({
+         id: doc.id,
+         ...doc.data(),
+       }));
+       setNotes(notesData);
 
-        const updatedEvents = notesData.map((note) => ({
-          title: note.content,
-          start: new Date(note.date),
-          end: new Date(note.date),
-        }));
-        setEvents(updatedEvents);
+       const updatedEvents = notesData.map((note) => ({
+         title: note.content,
+         start: new Date(note.date),
+         end: new Date(note.date),
+       }));
+       setEvents(updatedEvents);
 
-        // Update sentiment and graph data after setting notes
-        updateSentimentAndGraph();
-      });
+       // Update sentiment and graph data after setting notes
+       updateSentimentAndGraph();
+     });
 
-      return () => unsubscribe();
-    };
+     return () => unsubscribe();
+   };
 
-    fetchData();
-  }, []);
+   fetchData();
+ }, []); // Empty dependency array to run only once when component mounts
+
+ useEffect(() => {
+   // Check if notes and selectedDate are available
+   if (notes.length > 0 && selectedDate) {
+     updateSentimentAndGraph();
+   }
+ }, [notes, selectedDate]);
 
   // Function to prepare sentiment data for the line chart
   const prepareSentimentData = () => {
