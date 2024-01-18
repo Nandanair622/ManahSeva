@@ -4,6 +4,7 @@ import {
   deleteDoc,
   doc,
   getDocs,
+  getDoc,
   orderBy,
   query,
   updateDoc,
@@ -23,10 +24,33 @@ export default function Profile() {
   const [changeDetail, setChangeDetail] = useState(false);
 
   const [formData, setFormData] = useState({
-    name: auth.currentUser.displayName,
-    email: auth.currentUser.email,
+  name: auth.currentUser.displayName,
+  email: auth.currentUser.email,
   });
-  const { name, email } = formData;
+  
+  useEffect(() => {
+    async function fetchUserDetails() {
+      try {
+        const userDocRef = doc(db, "users", auth.currentUser.uid);
+        const userDocSnap = await getDoc(userDocRef);
+
+        if (userDocSnap.exists()) {
+          const userData = userDocSnap.data();
+          setFormData((prevData) => ({
+            ...prevData,
+            age: userData.age || "",
+            gender: userData.gender || "",
+          }));
+        }
+      } catch (error) {
+        console.error("Error fetching user details:", error);
+      }
+    }
+
+    fetchUserDetails();
+  }, [auth.currentUser.uid]);
+
+  const { name, email, age, gender } = formData;
   function onLogOut() {
     auth.signOut();
     navigate("/");
@@ -34,26 +58,35 @@ export default function Profile() {
   const [blogs, setBlogs] = useState(null);
   const [loading, setLoading] = useState(true);
   function onChange(e) {
-    setFormData((prevState) => ({
-      ...prevState,
-      [e.target.id]: e.target.value,
-    }));
+  setFormData((prevState) => ({
+    ...prevState,
+    [e.target.id]: e.target.value,
+  }));
   }
-  //update name in firebase
+  //update details in firebase
   async function onSubmit() {
-    try {
-      //update in firebase authentication
-      if (auth.currentUser.displayName !== name) {
-        await updateProfile(auth.currentUser, { displayName: name });
-      }
-      //update name in the firestore
-      const docRef = doc(db, "users", auth.currentUser.uid);
-      await updateDoc(docRef, { name });
-      toast.success("Profile details updated");
-    } catch (error) {
-      toast.error("Could not update profile details");
+  try {
+    // update in firebase authentication
+    if (
+      auth.currentUser.displayName !== name ||
+      auth.currentUser.age !== age ||
+      auth.currentUser.gender !== gender
+    ) {
+      await updateProfile(auth.currentUser, {
+        displayName: name,
+        age: age,
+        gender: gender,
+      });
     }
+    // update details in firestore
+    const docRef = doc(db, "users", auth.currentUser.uid);
+    await updateDoc(docRef, { name, age, gender });
+    toast.success("Profile details updated");
+  } catch (error) {
+    toast.error("Could not update profile details");
   }
+}
+
   useEffect(() => {
     async function fetchUserBlogs() {
       const blogRef = collection(db, "blogs");
@@ -92,6 +125,9 @@ export default function Profile() {
         <h1 className="text-3xl text-center mt-6 font-bold">My Profile</h1>
         <div className="w-full :w-[50%] mt-6 px-3">
           <form>
+            <label htmlFor="name" className="block text-sm font-medium text-gray-600 mb-1">
+              Name:
+            </label>
             <input
               type="text"
               id="name"
@@ -102,6 +138,9 @@ export default function Profile() {
                 changeDetail && "bg-red-200 focus:bg-red-200"
               }`}
             />
+            <label htmlFor="email" className="block text-sm font-medium text-gray-600 mb-1">
+              Email:
+            </label>
             <input
               type="text"
               id="email"
@@ -109,9 +148,35 @@ export default function Profile() {
               disabled
               className="mb-6 w-full px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out"
             />
+            <label htmlFor="age" className="block text-sm font-medium text-gray-600 mb-1">
+              Age:
+            </label>
+            <input
+              type="text"
+              id="age"
+              value={age}
+              disabled={!changeDetail}
+              onChange={onChange}
+              className={`mb-6 w-1/3 px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out ${
+                changeDetail && "bg-red-200 focus:bg-red-200"
+              }`}
+            />
+            <label htmlFor="gender" className="block text-sm font-medium text-gray-600 mb-1">
+              Gender:
+            </label>
+            <input
+              type="text"
+              id="gender"
+              value={gender}
+              disabled={!changeDetail}
+              onChange={onChange}
+              className={`mb-6 w-1/3 px-4 py-2 text-xl text-gray-700 bg-white border border-gray-300 rounded transition ease-in-out ${
+                changeDetail && "bg-red-200 focus:bg-red-200"
+              }`}
+            />
             <div className="flex justify-between whitespace-nowrap text-sm sm:text-lg">
               <p className="flex items-center mb-6 ">
-                Do you want to change your name?
+                Do you want to update your details?
                 <span
                   onClick={() => {
                     changeDetail && onSubmit();
@@ -161,6 +226,7 @@ export default function Profile() {
           </>
         )}
       </div>
+      <div><br /></div>
       <Footer/>
     </>
   );
