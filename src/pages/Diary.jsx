@@ -16,12 +16,12 @@ import {
   where,
 } from "firebase/firestore";
 import Sentiment from "sentiment";
-import Chart from "chart.js/auto";
-import { Doughnut } from "react-chartjs-2";
 import PieChart from "../components/PieChart";
 import Recommendations from "../components/Recommendations";
 import { Link } from "react-router-dom";
 import LineChart from "../components/LineChart";
+import jsPDF from "jspdf";
+import html2canvas from "html2canvas";
 const localizer = momentLocalizer(moment);
 
 
@@ -39,7 +39,7 @@ const Diary = () => {
   });
   const [sentimentData, setSentimentData] = useState([]);
   const auth = getAuth();
-
+  const [reportContainer, setReportContainer] = useState(null);
   const handleDateChange = (date) => {
     setSelectedDate(date);
 
@@ -267,6 +267,43 @@ const Diary = () => {
     prepareSentimentData();
   }, [notes, selectedDate]);
 
+  const downloadReport = async () => {
+  if (reportContainer) {
+    // Use html2canvas to capture the content of the reportContainer
+    const canvas = await html2canvas(reportContainer);
+
+    // Create a new jspdf document
+    const pdf = new jsPDF({
+      orientation: 'landscape',
+      unit: 'mm',
+      format: 'a4',
+    });
+
+    // Calculate the width and height of the PDF page
+    const pdfWidth = pdf.internal.pageSize.getWidth();
+    const pdfHeight = pdf.internal.pageSize.getHeight();
+
+    // Calculate the aspect ratio of the captured content
+    const aspectRatio = canvas.width / canvas.height;
+
+    // Calculate the width and height of the image in the PDF
+    let imgWidth = pdfWidth;
+    let imgHeight = imgWidth / aspectRatio;
+
+    // If the height of the image exceeds the height of the PDF, adjust the height
+    if (imgHeight > pdfHeight) {
+      imgHeight = pdfHeight;
+      imgWidth = imgHeight * aspectRatio;
+    }
+
+    // Add the captured image to the PDF
+    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
+
+    // Save the PDF file
+    pdf.save('sentiment_report.pdf');
+  }
+};
+
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-3/4 h-4/5">
@@ -384,6 +421,8 @@ const Diary = () => {
             : "N/A"}
         </p>
         <br />
+        <div id="report-container" ref={setReportContainer}>
+          <br />
         <div className="flex">
           <div className="w-3/4 mr-6 h-full">
             <LineChart sentimentData={sentimentData} />
@@ -397,7 +436,16 @@ const Diary = () => {
         {/* Display recommendations based on sentiment category */}
 
         <Recommendations monthOverallSentiment={monthOverallSentiment} />
-
+        <br />
+        <br />
+        
+        </div>
+        <button
+          className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
+          onClick={downloadReport}
+          >
+            Download Report
+        </button>
         <p className="text-xl  mb-4 text-gray-700 text-center mt-6">
           Explore our{" "}
           <Link to="/Blog" className="text-blue-500 hover:underline">
