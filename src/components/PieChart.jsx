@@ -68,8 +68,7 @@ const PieChart = ({ sentimentData }) => {
   return (
     <div>
       <canvas id="sentimentPieChart" width="400" height="200"></canvas>
-      <div id="chartInfo"></div>
-      <p>Pie Chart for Sentiment Distribution</p>
+      <div id="chartInfo" style={{ textAlign: 'center' }} ></div>
     </div>
   );
 };

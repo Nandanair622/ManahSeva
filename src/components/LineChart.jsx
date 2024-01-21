@@ -17,7 +17,7 @@ const LineChart = ({ sentimentData }) => {
       chartInstance = new Chart(ctx, {
         type: "line",
         data: {
-          labels: sentimentData.map((data) => data.date),
+          labels: sentimentData.map((data) => data.date.slice(8, 10)),
           datasets: [
             {
               label: "Sentiment Score",
@@ -56,10 +56,8 @@ const LineChart = ({ sentimentData }) => {
   return (
     <div>
       <canvas id="sentimentChart" ref={lineChartRef} width="400" height="200"></canvas>
-      <p>Line Chart for Sentiment tracking</p>
     </div>
   );
 };
 
 export default LineChart;
-    
