@@ -1,29 +1,37 @@
-import { useEffect } from "react";
+import React, { useEffect, useRef, useCallback } from "react";
 import Chart from "chart.js/auto";
 
-const PieChart = ({ sentimentData, textData }) => {
+const PieChart = ({ sentimentData }) => {
+  const pieChartRef = useRef(null);
+
+  const updateChartInfo = useCallback(() => {
+    if (pieChartRef.current && pieChartRef.current.data) {
+      const chartData = pieChartRef.current.data;
+      const total = chartData.datasets[0].data.reduce((acc, value) => acc + value, 0);
+
+      const content = chartData.labels.map((label, i) => {
+        const value = chartData.datasets[0].data[i];
+        const percentage = ((value / total) * 100).toFixed(2);
+        return `${label}: ${percentage}%`;
+      }).join('<br>');
+
+      const chartInfoElement = document.getElementById("chartInfo");
+      if (chartInfoElement) {
+        chartInfoElement.innerHTML = content;
+      }
+    }
+  }, []);
+
   useEffect(() => {
+    // Pie Chart
     const pieCtx = document.getElementById("sentimentPieChart");
 
-    let pieChartInstance = null;
+    if (typeof Chart !== "undefined" && pieCtx) {
+      const positiveCount = sentimentData.filter((data) => data.score > 0).length;
+      const neutralCount = sentimentData.filter((data) => data.score === 0).length;
+      const negativeCount = sentimentData.filter((data) => data.score < 0).length;
 
-    if (pieCtx && sentimentData.length > 0) {
-      if (pieChartInstance) {
-        pieChartInstance.destroy();
-      }
-
-      // Pie Chart
-      const positiveCount = sentimentData.filter(
-        (data) => data.score > 0
-      ).length;
-      const neutralCount = sentimentData.filter(
-        (data) => data.score === 0
-      ).length;
-      const negativeCount = sentimentData.filter(
-        (data) => data.score < 0
-      ).length;
-
-      pieChartInstance = new Chart(pieCtx, {
+      const pieChartInstance = new Chart(pieCtx, {
         type: "pie",
         data: {
           labels: ["Positive", "Neutral", "Negative"],
@@ -31,36 +39,38 @@ const PieChart = ({ sentimentData, textData }) => {
             {
               label: "Pie Chart",
               data: [positiveCount, neutralCount, negativeCount],
-              backgroundColor: ["#0D9488", "#2563EB", "#F43F5E"],
+              backgroundColor: ["green", "blue", "red"],
             },
           ],
         },
         options: {
-          responsive: true,
           plugins: {
             legend: {
-              position: "top",
+              display: false,
             },
-            // title: {
-            //   display: true,
-            //   text: "Sentiment Distribution Pie Chart",
-            // },
           },
         },
       });
-    }
 
-    return () => {
-      if (pieChartInstance) {
+      // Store the pie chart instance in the ref
+      pieChartRef.current = pieChartInstance;
+
+      return () => {
         pieChartInstance.destroy();
-      }
-    };
+      };
+    }
   }, [sentimentData]);
 
+  useEffect(() => {
+    updateChartInfo();
+  }, [updateChartInfo, sentimentData]);
+
   return (
-    <>
-      <canvas id="sentimentPieChart" className="w-800 h-800"></canvas>
-    </>
+    <div>
+      <canvas id="sentimentPieChart" width="400" height="200"></canvas>
+      <div id="chartInfo"></div>
+      <p>Pie Chart for Sentiment Distribution</p>
+    </div>
   );
 };
 

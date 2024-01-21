@@ -21,7 +21,9 @@ import { Doughnut } from "react-chartjs-2";
 import PieChart from "../components/PieChart";
 import Recommendations from "../components/Recommendations";
 import { Link } from "react-router-dom";
+import LineChart from "../components/LineChart";
 const localizer = momentLocalizer(moment);
+
 
 const Diary = () => {
   const [mostPositiveDay, setMostPositiveDay] = useState(null);
@@ -265,57 +267,6 @@ const Diary = () => {
     prepareSentimentData();
   }, [notes, selectedDate]);
 
-  // Render the line chart using Chart.js
-  useEffect(() => {
-    const ctx = document.getElementById("sentimentChart");
-    let chartInstance = null;
-
-    if (ctx && sentimentData.length > 0) {
-      // Destroy existing chart instance if it exists
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
-
-      chartInstance = new Chart(ctx, {
-        type: "line",
-        data: {
-          labels: sentimentData.map((data) => data.date),
-          datasets: [
-            {
-              label: "Sentiment Score",
-              data: sentimentData.map((data) => data.score),
-              borderColor: (context) => {
-                const score = context.dataset.data[context.dataIndex];
-                return score > 0 ? "green" : score < 0 ? "red" : "black";
-              },
-              backgroundColor: (context) => {
-                const score = context.dataset.data[context.dataIndex];
-                const alpha = Math.abs(score) / 100; // Adjust alpha based on score magnitude
-                return score > 0
-                  ? `rgba(0, 255, 0, ${alpha})`
-                  : score < 0
-                  ? `rgba(255, 0, 0, ${alpha})`
-                  : `rgba(255, 255, 0, ${alpha})`;
-              },
-              borderWidth: 1,
-            },
-          ],
-        },
-        options: {
-          
-        },
-      });
-    }
-
-    // Return a cleanup function to destroy the chart when component unmounts
-    return () => {
-      if (chartInstance) {
-        chartInstance.destroy();
-      }
-    };
-  }, [sentimentData]);
-
-
   return (
     <div className="flex justify-center items-center h-screen">
       <div className="w-3/4 h-4/5">
@@ -435,14 +386,9 @@ const Diary = () => {
         <br />
         <div className="flex">
           <div className="w-3/4 mr-6 h-full">
-            <canvas
-              id="sentimentChart"
-              className="border border-gray-300 rounded bg-white"
-            ></canvas>
+            <LineChart sentimentData={sentimentData} />
           </div>
           <div className="w-1/4 ml-6 h-full items-center">
-            <br />
-            <br />
             <br />
             <PieChart sentimentData={sentimentData} />
           </div>
