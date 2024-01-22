@@ -21,6 +21,9 @@ import Diary from "./pages/Diary";
 import MindPodcast from "./components/MindPodcast";
 import MindVideo from "./components/MindVideo";
 import MindBlog from "./components/MindBlog";
+import Dashboard from "./pages/Dashboard";
+import Quote from "./components/Quote";
+
 function App() {
   return (
     <>
@@ -37,6 +40,8 @@ function App() {
           <Route path="/MindPodcast" element={<MindPodcast />}></Route>
           <Route path="/MindVideo" element={<MindVideo />}></Route>
           <Route path="/MindBlog" element={<MindBlog />}></Route>
+          <Route path="/Quote" element={<Quote />}></Route>
+
           <Route path="/ContactUs" element={<ContactUs />}></Route>
           {/* <Route path="/EditBlog/:blogId" element={<EditBlog />}></Route> */}
           <Route path="/:blogId" element={<ReadBlog />}></Route>
@@ -53,6 +58,10 @@ function App() {
 
           <Route path="/Diary" element={<PrivateRoute />}>
             <Route path="/Diary" element={<Diary />}></Route>
+          </Route>
+
+          <Route path="/Dashboard" element={<PrivateRoute />}>
+            <Route path="/Dashboard" element={<Dashboard />}></Route>
           </Route>
         </Routes>
         {/* <Footer /> */}
