@@ -16,13 +16,11 @@ import {
   where,
 } from "firebase/firestore";
 import Sentiment from "sentiment";
-import Chart from "chart.js/auto";
-import { Doughnut } from "react-chartjs-2";
 import PieChart from "../components/PieChart";
 import Recommendations from "../components/Recommendations";
 import { Link } from "react-router-dom";
-import { toast } from "react-toastify";
 const localizer = momentLocalizer(moment);
+
 
 const Diary = () => {
   const [mostPositiveDay, setMostPositiveDay] = useState(null);
@@ -38,7 +36,7 @@ const Diary = () => {
   });
   const [sentimentData, setSentimentData] = useState([]);
   const auth = getAuth();
-
+  const [reportContainer, setReportContainer] = useState(null);
   const handleDateChange = (date) => {
     setSelectedDate(date);
 
@@ -304,16 +302,7 @@ const Diary = () => {
           ],
         },
         options: {
-          scales: {
-            y: {
-              beginAtZero: true,
-              ticks: {
-                stepSize: 1,
-                min: -1,
-                max: 1,
-              },
-            },
-          },
+          
         },
       });
     }
@@ -326,172 +315,168 @@ const Diary = () => {
     };
   }, [sentimentData]);
 
+
   return (
-    <>
-      <h1 className="text-3xl text-center mt-6 font-bold">
-        {auth.currentUser.displayName}'s Diary
-      </h1>
-      <div className="flex justify-center items-center h-screen">
-        <div className="w-3/4 h-4/5">
-          {showModal && (
-            <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
-              <div className="bg-white w-1/3 h-1/3 p-4 rounded-md">
-                {selectedNote ? (
-                  <>
-                    <div className="text-center p-2">
-                      <p>Edit note for: {selectedNote.date}</p>
-                    </div>
-                    <textarea
-                      className="w-full h-2/5 p-2 ml-2 mr-4 mb-2 border border-gray-300 rounded-md mt-2"
-                      value={inputNote}
-                      onChange={(e) => setInputNote(e.target.value)}
-                      placeholder="Edit note for this date..."
-                    />
-                    <div className="flex justify-between mt-2 ml-4 mr-4">
-                      <button
-                        className="bg-green-500 text-white px-4 py-2 rounded-md"
-                        onClick={handleEditNote}
-                      >
-                        Save Changes
-                      </button>
-                      <button
-                        className="bg-red-500 text-white px-4 py-2 rounded-md ml-2"
-                        onClick={handleDeleteNote}
-                      >
-                        Delete Note
-                      </button>
-                      <button
-                        className="bg-gray-500 text-white px-4 py-2 rounded-md ml-2"
-                        onClick={() => setShowModal(false)}
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </>
-                ) : (
-                  <>
-                    <div className="text-center p-2">
-                      <p>Add a note for: {selectedDate.toDateString()}</p>
-                    </div>
-                    <textarea
-                      className="w-full h-2/5 p-2 ml-2 mr-4 mb-2 border border-gray-300 rounded-md mt-2"
-                      value={inputNote}
-                      onChange={(e) => setInputNote(e.target.value)}
-                      placeholder="Add note for this date..."
-                    />
-                    <div className="flex justify-between mt-2 ml-4 mr-4">
-                      <button
-                        className="bg-blue-500 text-white px-4 py-2 rounded-md"
-                        onClick={handleAddNote}
-                      >
-                        Add Note
-                      </button>
-                      <button
-                        className="bg-gray-500 text-white px-4 py-2 rounded-md ml-2"
-                        onClick={() => setShowModal(false)}
-                      >
-                        Close
-                      </button>
-                    </div>
-                  </>
-                )}
-              </div>
+    <div className="flex justify-center items-center h-screen">
+      <div className="w-3/4 h-4/5">
+        {showModal && (
+          <div className="fixed top-0 left-0 w-full h-full flex items-center justify-center bg-gray-800 bg-opacity-50 z-50">
+            <div className="bg-white w-1/3 h-1/3 p-4 rounded-md">
+              {selectedNote ? (
+                <>
+                  <div className="text-center p-2">
+                    <p>Edit note for: {selectedNote.date}</p>
+                  </div>
+                  <textarea
+                    className="w-full h-2/5 p-2 ml-2 mr-4 mb-2 border border-gray-300 rounded-md mt-2"
+                    value={inputNote}
+                    onChange={(e) => setInputNote(e.target.value)}
+                    placeholder="Edit note for this date..."
+                  />
+                  <div className="flex justify-between mt-2 ml-4 mr-4">
+                    <button
+                      className="bg-green-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleEditNote}
+                    >
+                      Save Changes
+                    </button>
+                    <button
+                      className="bg-red-500 text-white px-4 py-2 rounded-md ml-2"
+                      onClick={handleDeleteNote}
+                    >
+                      Delete Note
+                    </button>
+                    <button
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md ml-2"
+                      onClick={() => setShowModal(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="text-center p-2">
+                    <p>Add a note for: {selectedDate.toDateString()}</p>
+                  </div>
+                  <textarea
+                    className="w-full h-2/5 p-2 ml-2 mr-4 mb-2 border border-gray-300 rounded-md mt-2"
+                    value={inputNote}
+                    onChange={(e) => setInputNote(e.target.value)}
+                    placeholder="Add note for this date..."
+                  />
+                  <div className="flex justify-between mt-2 ml-4 mr-4">
+                    <button
+                      className="bg-blue-500 text-white px-4 py-2 rounded-md"
+                      onClick={handleAddNote}
+                    >
+                      Add Note
+                    </button>
+                    <button
+                      className="bg-gray-500 text-white px-4 py-2 rounded-md ml-2"
+                      onClick={() => setShowModal(false)}
+                    >
+                      Close
+                    </button>
+                  </div>
+                </>
+              )}
             </div>
-          )}
-          <Calendar
-            localizer={localizer}
-            events={events}
-            startAccessor="start"
-            endAccessor="end"
-            style={{ borderRadius: "10px" }}
-            className="w-full h-full bg-white rounded-lg shadow-lg"
-            onSelectEvent={(event) => {
-              const clickedNote = notes.find(
-                (note) => note.date === moment(event.start).format("YYYY-MM-DD")
-              );
-              setSelectedNote(clickedNote);
-              setInputNote(clickedNote ? clickedNote.content : "");
+          </div>
+        )}
+        <Calendar
+          localizer={localizer}
+          events={events}
+          startAccessor="start"
+          endAccessor="end"
+          style={{ borderRadius: "10px" }}
+          className="w-full h-full bg-white rounded-lg shadow-lg"
+          onSelectEvent={(event) => {
+            const clickedNote = notes.find(
+              (note) => note.date === moment(event.start).format("YYYY-MM-DD")
+            );
+            setSelectedNote(clickedNote);
+            setInputNote(clickedNote ? clickedNote.content : "");
+            setShowModal(true);
+          }}
+          onSelectSlot={(slotInfo) => {
+            if (slotInfo.start <= new Date()) {
+              handleMonthChange(slotInfo.start); // Update selectedDate on month change
               setShowModal(true);
-            }}
-            onSelectSlot={(slotInfo) => {
-              if (slotInfo.start <= new Date()) {
-                handleMonthChange(slotInfo.start); // Update selectedDate on month change
-                setShowModal(true);
-                setSelectedNote(null);
-              }
-            }}
-            selectable={(date) => date <= new Date()}
-            onSelecting={(slotInfo) => handleDateChange(slotInfo.start)}
-            onNavigate={(date) => handleMonthChange(date)} // Handle month change in the calendar
-          />
-          <br />
-          <div className="flex items-center mb-4">
-            <hr className="flex-grow border-b border-gray-300 mr-4" />
-            <span className="text-gray-500 font-semibold text-xl">
-              Mental Fitness
-            </span>
-            <hr className="flex-grow border-b border-gray-300 ml-4" />
-          </div>
-          <br />
-          <h2 className="text-2xl font-bold mb-2 text-center">
-            {monthOverallSentiment.category}
-          </h2>
-          <br />
-          <p className="text-gray-800  text-center">
-            Average Score: {monthOverallSentiment.score}
-          </p>
-          <p className=" text-gray-800  text-center">
-            Happiest Day of the Month:{" "}
-            {mostPositiveDay
-              ? moment(mostPositiveDay).format("DD-MM-YYYY")
-              : "N/A"}
-          </p>
-          <br />
-          <div className="flex">
-            <div className="w-3/4 mr-6 h-full">
-              <canvas
-                id="sentimentChart"
-                className="border border-gray-300 rounded bg-white"
-              ></canvas>
-            </div>
-            <div className="w-1/4 ml-6 h-full items-center">
-              <br />
-              <br />
-              <br />
-              <PieChart sentimentData={sentimentData} />
-            </div>
-          </div>
-          <br />
-          {/* Display recommendations based on sentiment category */}
-
-          <Recommendations monthOverallSentiment={monthOverallSentiment} />
-
-          <p className="text-xl  mb-4 text-gray-700 text-center mt-6">
-            Explore our{" "}
-            <Link to="/Blog" className="text-blue-500 hover:underline">
-              MindHub
-            </Link>{" "}
-            page for a wealth of resources.
-            <br /> Discover insightful{" "}
-            <Link to="/MindBlog" className="text-blue-500 hover:underline">
-              blogs
-            </Link>
-            , thought-provoking{" "}
-            <Link to="/MindVideo" className="text-blue-500 hover:underline">
-              videos
-            </Link>
-            , and engaging{" "}
-            <Link to="/MindPodcast" className="text-blue-500 hover:underline">
-              podcasts
-            </Link>
-            , all centered around Mental Health Awareness.
-          </p>
-          <br />
-          <br />
-          <br />
+              setSelectedNote(null);
+            }
+          }}
+          selectable={(date) => date <= new Date()}
+          onSelecting={(slotInfo) => handleDateChange(slotInfo.start)}
+          onNavigate={(date) => handleMonthChange(date)} // Handle month change in the calendar
+        />
+        <br />
+        <div className="flex items-center mb-4">
+          <hr className="flex-grow border-b border-gray-300 mr-4" />
+          <span className="text-gray-500 font-semibold text-xl">
+            Mental Fitness
+          </span>
+          <hr className="flex-grow border-b border-gray-300 ml-4" />
         </div>
+        <br />
+        <h2 className="text-2xl font-bold mb-2 text-center">
+          {monthOverallSentiment.category}
+        </h2>
+        <br />
+        <p className="text-gray-800  text-center">
+          Average Score: {monthOverallSentiment.score}
+        </p>
+        <p className=" text-gray-800  text-center">
+          Happiest Day of the Month:{" "}
+          {mostPositiveDay
+            ? moment(mostPositiveDay).format("DD-MM-YYYY")
+            : "N/A"}
+        </p>
+        <br />
+        <div className="flex">
+          <div className="w-3/4 mr-6 h-full">
+            <canvas
+              id="sentimentChart"
+              className="border border-gray-300 rounded bg-white"
+            ></canvas>
+          </div>
+          <div className="w-1/4 ml-6 h-full items-center">
+            <br />
+            <br />
+            <br />
+            <PieChart sentimentData={sentimentData} />
+          </div>
+        </div>
+        <br />
+        {/* Display recommendations based on sentiment category */}
+
+        <Recommendations monthOverallSentiment={monthOverallSentiment} />
+
+        <p className="text-xl  mb-4 text-gray-700 text-center mt-6">
+          Explore our{" "}
+          <Link to="/Blog" className="text-blue-500 hover:underline">
+            MindHub
+          </Link>{" "}
+          page for a wealth of resources.
+          <br /> Discover insightful{" "}
+          <Link to="/MindBlog" className="text-blue-500 hover:underline">
+            blogs
+          </Link>
+          , thought-provoking{" "}
+          <Link to="/MindVideo" className="text-blue-500 hover:underline">
+            videos
+          </Link>
+          , and engaging{" "}
+          <Link to="/MindPodcast" className="text-blue-500 hover:underline">
+            podcasts
+          </Link>
+          , all centered around Mental Health Awareness.
+        </p>
+        <br />
+        <br />
+        <br />
       </div>
-    </>
+    </div>
   );
 };
 

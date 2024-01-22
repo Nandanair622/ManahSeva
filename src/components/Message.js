@@ -30,8 +30,8 @@ const Message = ({ message, userEmail }) => {
       setIsBullying(detectedAsBullying);
 
       if (detectedAsBullying && !emailSent) { // Check if bullying is detected and the email hasn't been sent yet
-          sendBullyWarningEmail(userEmail);
-          setEmailSent(true); // Set the emailSent state to true to indicate that the email has been sent
+          // sendBullyWarningEmail(userEmail);
+          // setEmailSent(true); // Set the emailSent state to true to indicate that the email has been sent
         }
 
       if (detectedAsBullying) {
