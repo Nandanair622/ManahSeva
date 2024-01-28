@@ -19,8 +19,10 @@ import Sentiment from "sentiment";
 import PieChart from "../components/PieChart";
 import Recommendations from "../components/Recommendations";
 import { Link } from "react-router-dom";
-const localizer = momentLocalizer(moment);
+import Chart from "chart.js/auto";
+import { toast } from "react-toastify";
 
+const localizer = momentLocalizer(moment);
 
 const Diary = () => {
   const [mostPositiveDay, setMostPositiveDay] = useState(null);
@@ -301,9 +303,7 @@ const Diary = () => {
             },
           ],
         },
-        options: {
-          
-        },
+        options: {},
       });
     }
 
@@ -314,7 +314,6 @@ const Diary = () => {
       }
     };
   }, [sentimentData]);
-
 
   return (
     <div className="flex justify-center items-center h-screen">
