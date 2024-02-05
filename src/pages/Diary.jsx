@@ -446,6 +446,11 @@ const Diary = () => {
           >
             Download Report
         </button>
+        <Link to="/report">
+          <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4">
+            Go to Analytics Page
+          </button>
+        </Link>
         <p className="text-xl  mb-4 text-gray-700 text-center mt-6">
           Explore our{" "}
           <Link to="/Blog" className="text-blue-500 hover:underline">

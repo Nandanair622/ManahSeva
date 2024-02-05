@@ -18,6 +18,7 @@ import Footer from "./components/Footer";
 import ChatContainer from "./components/ChatContainer";
 import ContactUs from "./pages/ContactUs";
 import Diary from "./pages/Diary";
+import Report from "./components/Report";
 import MindPodcast from "./components/MindPodcast";
 import MindVideo from "./components/MindVideo";
 import MindBlog from "./components/MindBlog";
@@ -53,6 +54,10 @@ function App() {
 
           <Route path="/Diary" element={<PrivateRoute />}>
             <Route path="/Diary" element={<Diary />}></Route>
+          </Route>
+          
+          <Route path="/report" element={<PrivateRoute />}>
+            <Route path="/report" element={<Report />}></Route>
           </Route>
         </Routes>
         {/* <Footer /> */}
