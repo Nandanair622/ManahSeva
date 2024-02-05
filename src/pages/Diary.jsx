@@ -19,11 +19,10 @@ import Sentiment from "sentiment";
 import PieChart from "../components/PieChart";
 import Recommendations from "../components/Recommendations";
 import { Link } from "react-router-dom";
-import LineChart from "../components/LineChart";
-import jsPDF from "jspdf";
-import html2canvas from "html2canvas";
-const localizer = momentLocalizer(moment);
+import Chart from "chart.js/auto";
+import { toast } from "react-toastify";
 
+const localizer = momentLocalizer(moment);
 
 const Diary = () => {
   const [mostPositiveDay, setMostPositiveDay] = useState(null);
@@ -86,6 +85,7 @@ const Diary = () => {
     } else {
       // Add a new note
       await addDoc(notesRef, noteData);
+      toast.success("Note added successfully! ");
     }
 
     setInputNote("");
@@ -159,9 +159,9 @@ const Diary = () => {
     const clampedScore = Math.max(-1, Math.min(1, averageScore));
 
     let sentimentCategory;
-    if (clampedScore == 0)
-      sentimentCategory="-"
-    else if (clampedScore > 0.2) {
+    if (clampedScore == 0) {
+      sentimentCategory = "-";
+    } else if (clampedScore > 0.2) {
       sentimentCategory = "Positive";
     } else if (clampedScore < -0.2) {
       sentimentCategory = "Negative";
@@ -190,43 +190,43 @@ const Diary = () => {
     updateSentimentAndGraph();
   }, [selectedDate]);
 
- useEffect(() => {
-   const fetchData = async () => {
-     const notesRef = collection(db, "notes");
-     const userQuery = query(
-       notesRef,
-       where("uid", "==", auth.currentUser.uid)
-     );
-     const unsubscribe = onSnapshot(userQuery, (snapshot) => {
-       const notesData = snapshot.docs.map((doc) => ({
-         id: doc.id,
-         ...doc.data(),
-       }));
-       setNotes(notesData);
+  useEffect(() => {
+    const fetchData = async () => {
+      const notesRef = collection(db, "notes");
+      const userQuery = query(
+        notesRef,
+        where("uid", "==", auth.currentUser.uid)
+      );
+      const unsubscribe = onSnapshot(userQuery, (snapshot) => {
+        const notesData = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setNotes(notesData);
 
-       const updatedEvents = notesData.map((note) => ({
-         title: note.content,
-         start: new Date(note.date),
-         end: new Date(note.date),
-       }));
-       setEvents(updatedEvents);
+        const updatedEvents = notesData.map((note) => ({
+          title: note.content,
+          start: new Date(note.date),
+          end: new Date(note.date),
+        }));
+        setEvents(updatedEvents);
 
-       // Update sentiment and graph data after setting notes
-       updateSentimentAndGraph();
-     });
+        // Update sentiment and graph data after setting notes
+        updateSentimentAndGraph();
+      });
 
-     return () => unsubscribe();
-   };
+      return () => unsubscribe();
+    };
 
-   fetchData();
- }, []); // Empty dependency array to run only once when component mounts
+    fetchData();
+  }, []); // Empty dependency array to run only once when component mounts
 
- useEffect(() => {
-   // Check if notes and selectedDate are available
-   if (notes.length > 0 && selectedDate) {
-     updateSentimentAndGraph();
-   }
- }, [notes, selectedDate]);
+  useEffect(() => {
+    // Check if notes and selectedDate are available
+    if (notes.length > 0 && selectedDate) {
+      updateSentimentAndGraph();
+    }
+  }, [notes, selectedDate]);
 
   // Function to prepare sentiment data for the line chart
   const prepareSentimentData = () => {
@@ -267,42 +267,53 @@ const Diary = () => {
     prepareSentimentData();
   }, [notes, selectedDate]);
 
-  const downloadReport = async () => {
-  if (reportContainer) {
-    // Use html2canvas to capture the content of the reportContainer
-    const canvas = await html2canvas(reportContainer);
+  // Render the line chart using Chart.js
+  useEffect(() => {
+    const ctx = document.getElementById("sentimentChart");
+    let chartInstance = null;
 
-    // Create a new jspdf document
-    const pdf = new jsPDF({
-      orientation: 'landscape',
-      unit: 'mm',
-      format: 'a4',
-    });
+    if (ctx && sentimentData.length > 0) {
+      // Destroy existing chart instance if it exists
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
 
-    // Calculate the width and height of the PDF page
-    const pdfWidth = pdf.internal.pageSize.getWidth();
-    const pdfHeight = pdf.internal.pageSize.getHeight();
-
-    // Calculate the aspect ratio of the captured content
-    const aspectRatio = canvas.width / canvas.height;
-
-    // Calculate the width and height of the image in the PDF
-    let imgWidth = pdfWidth;
-    let imgHeight = imgWidth / aspectRatio;
-
-    // If the height of the image exceeds the height of the PDF, adjust the height
-    if (imgHeight > pdfHeight) {
-      imgHeight = pdfHeight;
-      imgWidth = imgHeight * aspectRatio;
+      chartInstance = new Chart(ctx, {
+        type: "line",
+        data: {
+          labels: sentimentData.map((data) => data.date),
+          datasets: [
+            {
+              label: "Sentiment Score",
+              data: sentimentData.map((data) => data.score),
+              borderColor: (context) => {
+                const score = context.dataset.data[context.dataIndex];
+                return score > 0 ? "green" : score < 0 ? "red" : "black";
+              },
+              backgroundColor: (context) => {
+                const score = context.dataset.data[context.dataIndex];
+                const alpha = Math.abs(score) / 100; // Adjust alpha based on score magnitude
+                return score > 0
+                  ? `rgba(0, 255, 0, ${alpha})`
+                  : score < 0
+                  ? `rgba(255, 0, 0, ${alpha})`
+                  : `rgba(255, 255, 0, ${alpha})`;
+              },
+              borderWidth: 1,
+            },
+          ],
+        },
+        options: {},
+      });
     }
 
-    // Add the captured image to the PDF
-    pdf.addImage(canvas.toDataURL('image/png'), 'PNG', 0, 0, imgWidth, imgHeight);
-
-    // Save the PDF file
-    pdf.save('sentiment_report.pdf');
-  }
-};
+    // Return a cleanup function to destroy the chart when component unmounts
+    return () => {
+      if (chartInstance) {
+        chartInstance.destroy();
+      }
+    };
+  }, [sentimentData]);
 
   return (
     <div className="flex justify-center items-center h-screen">
@@ -421,13 +432,16 @@ const Diary = () => {
             : "N/A"}
         </p>
         <br />
-        <div id="report-container" ref={setReportContainer}>
-          <br />
         <div className="flex">
           <div className="w-3/4 mr-6 h-full">
-            <LineChart sentimentData={sentimentData} />
+            <canvas
+              id="sentimentChart"
+              className="border border-gray-300 rounded bg-white"
+            ></canvas>
           </div>
           <div className="w-1/4 ml-6 h-full items-center">
+            <br />
+            <br />
             <br />
             <PieChart sentimentData={sentimentData} />
           </div>
@@ -436,16 +450,7 @@ const Diary = () => {
         {/* Display recommendations based on sentiment category */}
 
         <Recommendations monthOverallSentiment={monthOverallSentiment} />
-        <br />
-        <br />
-        
-        </div>
-        <button
-          className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4"
-          onClick={downloadReport}
-          >
-            Download Report
-        </button>
+
         <Link to="/report">
           <button className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4">
             Go to Analytics Page
