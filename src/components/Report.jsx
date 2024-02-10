@@ -4,8 +4,7 @@ import {
   onSnapshot,
   query,
   where,
-  doc,
-  getDoc
+  getDocs,
 } from "firebase/firestore";
 import { db } from "../firebase";
 import { getAuth } from "firebase/auth";
@@ -13,6 +12,7 @@ import Chart from "chart.js/auto";
 import moment from "moment";
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import Recommendations from "./Recommendations";
 
 const Report = () => {
   const [notes, setNotes] = useState([]);
@@ -21,15 +21,8 @@ const Report = () => {
   const lineChartRef = useRef(null);
   const pieChartRef = useRef(null); 
   const [selectedDate, setSelectedDate] = useState(new Date()); 
-  const [monthOverallSentiment, setMonthOverallSentiment] = useState({
-    score: 0,
-    category: "Neutral",
-  });
   const [reportContainer, setReportContainer] = useState(null);
-  const [mostFrequentEmotion, setMostFrequentEmotion] = useState("");
-  const [prevMonthAverageSentiment, setPrevMonthAverageSentiment] = useState(0);
   const [sentimentCounts, setSentimentCounts] = useState({ positive: 0, negative: 0, neutral: 0 });
-  const [prevMonthNotes, setPrevMonthNotes] = useState([]);
   const [barChartRef, setBarChartRef] = useState(null);
   const [userInfo, setUserInfo] = useState({
     name: auth.currentUser.displayName,
@@ -40,75 +33,90 @@ const Report = () => {
   negative: 0,
   neutral: 0,
 });
+  const [averageSentiment, setAverageSentiment] = useState(0);
   const [prevMonthSentimentData, setPrevMonthSentimentData] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState(moment().month());
+  const [selectedYear, setSelectedYear] = useState(moment().year());
   const [chartInstances, setChartInstances] = useState({});
 
   useEffect(() => {
-    const fetchData = async () => {
-      const notesRef = collection(db, "notes");
-      const userQuery = query(
-        notesRef,
-        where("uid", "==", auth.currentUser.uid)
-      );
-      const unsubscribe = onSnapshot(userQuery, (snapshot) => {
-        const notesData = snapshot.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
-        setNotes(notesData);
+  const fetchData = async () => {
+    const notesRef = collection(db, "notes");
+    const userQuery = query(
+      notesRef,
+      where("uid", "==", auth.currentUser.uid)
+    );
+    const unsubscribe = onSnapshot(userQuery, async (snapshot) => {
+      const notesData = snapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setNotes(notesData);
 
-        // Update sentiment and graph data after setting notes
-        updateSentimentAndGraph();
+      // Update sentiment and graph data after setting notes
+      updateSentimentAndGraph(selectedMonth, selectedYear);
 
-        // Count notes by sentiment
-        countNotesBySentiment();
+      // Count notes by sentiment
+      countNotesBySentiment();
 
-      });
+      // Calculate average sentiment asynchronously
+      const avgSentiment = await prepareSentimentData(selectedMonth, selectedYear);
+      setAverageSentiment(avgSentiment);
+    });
 
-      return () => unsubscribe();
-    };
+    return () => unsubscribe();
+  };
 
-    fetchData();
-  }, []);
+  fetchData();
+}, [auth.currentUser.uid]);
+
+
+  useEffect(() => {
+    countNotesBySentiment();
+    prepareSentimentData(selectedMonth, selectedYear);
+    prepareSentimentData(selectedMonth - 1, selectedYear, true);
+  }, [notes, selectedMonth, selectedYear]);
+
+  const updateMonth = (event) => {
+    const selectedDate = moment(event.target.value, 'YYYY-MM');
+    setSelectedMonth(selectedDate.month());
+    setSelectedYear(selectedDate.year());
+  };
 
   const countNotesBySentiment = () => {
-  const currentMonthCounts = countNotesBySentimentForMonth(selectedDate);
-  setSentimentCounts(currentMonthCounts);
+    const currentMonthCounts = countNotesBySentimentForMonth(selectedMonth, selectedYear);
+    setSentimentCounts(currentMonthCounts);
 
-  const prevMonthDate = moment(selectedDate).subtract(1, 'months');
-  const prevMonthCounts = countNotesBySentimentForMonth(prevMonthDate);
-  setPrevMonthSentimentCounts(prevMonthCounts);
-};
+    const prevMonthCounts = countNotesBySentimentForMonth(selectedMonth - 1, selectedYear);
+    setPrevMonthSentimentCounts(prevMonthCounts);
+  };
 
 // Function to count notes by sentiment for a specific month
-const countNotesBySentimentForMonth = (date) => {
-  const counts = { positive: 0, negative: 0, neutral: 0 };
-  const selectedMonth = moment(date).month();
-  const selectedYear = moment(date).year();
-  const filteredNotes = notes.filter((note) => {
-    const noteMonth = moment(note.date).month();
-    const noteYear = moment(note.date).year();
-    return noteMonth === selectedMonth && noteYear === selectedYear;
-  });
+const countNotesBySentimentForMonth = (month, year) => {
+    const counts = { positive: 0, negative: 0, neutral: 0 };
+    const filteredNotes = notes.filter((note) => {
+      const noteMonth = moment(note.date).month();
+      const noteYear = moment(note.date).year();
+      return noteMonth === month && noteYear === year;
+    });
 
-  filteredNotes.forEach((note) => {
-    const sentimentScore = note.sentiment && note.sentiment.score;
-    if (sentimentScore > 0) {
-      counts.positive++;
-    } else if (sentimentScore < 0) {
-      counts.negative++;
-    } else {
-      counts.neutral++;
-    }
-  });
+    filteredNotes.forEach((note) => {
+      const sentimentScore = note.sentiment && note.sentiment.score;
+      if (sentimentScore > 0) {
+        counts.positive++;
+      } else if (sentimentScore < 0) {
+        counts.negative++;
+      } else {
+        counts.neutral++;
+      }
+    });
 
-  return counts;
-};
+    return counts;
+  };
 
   // Function to update sentiment and graph data based on selected month
   const updateSentimentAndGraph = () => {
   prepareSentimentData();
-
   const prevMonthDate = moment().subtract(1, 'months');
 
   const prevMonthNotes = notes.filter((note) =>
@@ -121,11 +129,12 @@ const countNotesBySentimentForMonth = (date) => {
 };
 
   // Function to prepare sentiment data for the line chart
-  const prepareSentimentData = () => {
-  const selectedMonth = moment(selectedDate).month(); // Get selected month (0-11)
-  const selectedYear = moment(selectedDate).year(); // Get selected year
-  const daysInMonth = moment(selectedDate).daysInMonth(); // Get the number of days in the selected month
-  const startDate = moment(selectedDate).startOf("month");
+  const prepareSentimentData = async (month, year, isPrevMonth = false) => {
+  const daysInMonth = moment([year, month]).daysInMonth();
+  const startDate = moment([year, month]).startOf("month");
+
+  let totalSentimentScore = 0;
+  let totalNotes = 0;
 
   const newData = [];
   for (let i = 0; i < daysInMonth; i++) {
@@ -134,8 +143,8 @@ const countNotesBySentimentForMonth = (date) => {
 
     const existingNote = notes.find(
       (note) =>
-        moment(note.date).month() === selectedMonth &&
-        moment(note.date).year() === selectedYear &&
+        moment(note.date).month() === month &&
+        moment(note.date).year() === year &&
         note.date === formattedDate
     );
 
@@ -146,12 +155,25 @@ const countNotesBySentimentForMonth = (date) => {
         ? existingNote.sentiment.score
         : 0;
 
+    totalSentimentScore += sentimentScore;
+    totalNotes++;
+
     newData.push({
       date: formattedDate,
       score: sentimentScore,
     });
   }
-  setSentimentData(newData);
+
+  // Calculate average sentiment score
+  const averageSentiment = totalNotes > 0 ? totalSentimentScore / totalNotes : 0;
+
+  if (isPrevMonth) {
+    setPrevMonthSentimentData(newData);
+  } else {
+    setSentimentData(newData);
+  }
+
+  return averageSentiment;
 };
 
 
@@ -263,6 +285,12 @@ useEffect(() => {
     },
   });
 
+  // Store the double line chart instance in the state
+  setChartInstances((prevState) => ({
+    ...prevState,
+    doubleLineChartInstance,
+  }));
+
   return () => {
     doubleLineChartInstance.destroy();
   };
@@ -349,7 +377,10 @@ useEffect(() => {
   });
 
   // Store the bar chart instance in the state
-  setBarChartRef(barChartInstance);
+  setChartInstances((prevState) => ({
+    ...prevState,
+    barChartInstance,
+  }));
 
   return () => {
     barChartInstance.destroy();
@@ -375,12 +406,22 @@ useEffect(() => {
     pdf.save('report.pdf');
   }
 };
-  
+
   return (
     <div className="flex justify-center items-center h-screen">
     <div id="report-container" ref={setReportContainer} className="w-3/4 h-4/5">
       <h1 className="text-center mb-10">Name: {userInfo.name}</h1>
-      
+    {/* Month Selector */}
+        <div className="mb-5">
+          <label htmlFor="monthSelector" className="mr-3">Select Month:</label>
+          <input
+            type="month"
+            id="monthSelector"
+            value={`${selectedYear}-${(`0${selectedMonth + 1}`).slice(-2)}`}
+            onChange={updateMonth}
+          />
+        </div> 
+        
     <div className="flex">
       <div className="w-3/4">
         <canvas id="sentimentLineChart" width="400" height="200"></canvas>
@@ -404,6 +445,7 @@ useEffect(() => {
     </div>
     <div className="flex flex-col items-center">
         <br />
+        <Recommendations monthOverallSentiment={averageSentiment}/>
         <button
           className="bg-blue-500 text-white px-4 py-2 rounded-md mt-4 "
           onClick={downloadReport}
