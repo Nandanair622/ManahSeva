@@ -24,8 +24,9 @@ export default function GAuth() {
           timestamp: serverTimestamp(),
         });
       }
+      navigate("/Dashboard");
       toast.success("Sign In was successful");
-      navigate("/");
+      
     } catch (error) {
       toast.error("Could not authorize with Google");
     }

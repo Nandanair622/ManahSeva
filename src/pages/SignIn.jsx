@@ -7,6 +7,7 @@ import { signInWithEmailAndPassword, auth, getAuth } from "firebase/auth";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 import Footer from "../components/Footer";
+
 export default function SignIn() {
   const [formData, setFormData] = useState({ email: "", password: "" });
   const { email, password } = formData;
@@ -28,8 +29,9 @@ export default function SignIn() {
         password
       );
       if (userCredential.user) {
+        navigate("/Dashboard");
         toast.success("Sign In was successful");
-        navigate("/");
+        
       }
     } catch (error) {
       toast.error("Wrong user credentials");
