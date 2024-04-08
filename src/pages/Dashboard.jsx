@@ -159,21 +159,24 @@ function Dashboard() {
       <br />
       <div className="max-w-6xl px-3 mt-6 mx-auto">
         {!loading && (
-          <div className="flex justify-center space-x-6">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            {/* Diary Entries */}
             <div className="bg-white rounded-lg p-4 shadow-md text-center">
-              <h2 className=" text-gray-700 text-xl font-semibold mb-1">
+              <h2 className="text-gray-700 text-xl font-semibold mb-1">
                 Diary Entries
               </h2>
               <p className="text-gray-600 text-xl">{diaryEntries}</p>
             </div>
+            {/* Published Blogs */}
             <div className="bg-white rounded-lg p-4 shadow-md text-center">
-              <h2 className=" text-gray-700 text-xl font-semibold mb-1">
+              <h2 className="text-gray-700 text-xl font-semibold mb-1">
                 Published Blogs
               </h2>
               <p className="text-gray-600 text-xl">{blogs.length}</p>
             </div>
+            {/* Community Engagement */}
             <div className="bg-white rounded-lg p-4 shadow-md text-center">
-              <h2 className=" text-gray-700 text-xl font-semibold mb-1">
+              <h2 className="text-gray-700 text-xl font-semibold mb-1">
                 Community Engagement
               </h2>
               <p className="text-gray-600 text-xl">{messageCount}</p>
@@ -181,6 +184,7 @@ function Dashboard() {
           </div>
         )}
       </div>
+      {/* Quote Of The Day */}
       <div className="max-w-6xl px-3 mt-6 mx-auto">
         <div className="flex items-center mb-4">
           <hr className="flex-grow border-b border-gray-300 mr-4" />
@@ -191,8 +195,7 @@ function Dashboard() {
         </div>
         <Quote />
       </div>
-
-      {/* Display blogs count by month */}
+      {/* Monthly Blogging Journey */}
       {!loading && (
         <div className="max-w-6xl px-3 mt-6 mx-auto">
           <div className="flex items-center mb-4">

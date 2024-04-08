@@ -7,11 +7,11 @@ import { deleteDoc, doc, collection, getDocs, query, where } from "firebase/fire
 
 
 const style = {
-  message: `flex items-center shadow-xl m-4 py-2 px-3  rounded-tl-full rounded-tr-full `,
-  name: ` mt-[-4rem] text-gray-600 text-xs`,
-  sent: `bg-[#395dff] text-white flex-row-reverse text-start float-right rounded-bl-full`,
-  received: `bg-[#e5e5ea]  flex-row-reverse text-black float-left rounded-br-full`,
-  timestamp: 'mb-[-4rem]  text-gray-600 text-xs',
+  message: `shadow-xl m-4 py-2 px-3 rounded-tl-lg rounded-tr-lg`,
+  name: `text-black-600 text-xs`,
+  sent: `bg-[#3f7de0] text-white text-start float-right rounded-bl-lg`,
+  received: `bg-[#e5e5ea] text-black float-left rounded-br-lg`,
+  timestamp: 'text-gray-600 text-xs',
 };
 
 const Message = ({ message, userEmail }) => {
@@ -30,8 +30,8 @@ const Message = ({ message, userEmail }) => {
       setIsBullying(detectedAsBullying);
 
       if (detectedAsBullying && !emailSent) { // Check if bullying is detected and the email hasn't been sent yet
-          // sendBullyWarningEmail(userEmail);
-          // setEmailSent(true); // Set the emailSent state to true to indicate that the email has been sent
+          sendBullyWarningEmail(userEmail);
+          setEmailSent(true); // Set the emailSent state to true to indicate that the email has been sent
         }
 
       if (detectedAsBullying) {

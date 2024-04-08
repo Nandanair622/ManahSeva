@@ -12,6 +12,7 @@ const style = {
     flexDirection: 'column',
     padding: '10px',
     overflowY: 'auto',
+    maxHeight: '70vh', // Limiting max height for better mobile experience
   },
 };
 

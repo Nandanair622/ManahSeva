@@ -6,7 +6,8 @@ export default function MindPodcast() {
       <h2 className="px-3 text-3xl text-center mt-6 font-bold">
         Harmony for the Mind
       </h2>
-      <div class="flex justify-center space-x-8 mt-4">
+      <div className="grid grid-cols-1 sm:grid-cols-1 lg:grid-cols-2 xl:grid-cols-3 gap-4">
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/album/4WJlT8rSyf9nf0YrdKriSO?utm_source=generator&theme=0"
@@ -17,6 +18,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/show/2BLdPSFfzWaYKiXYV0Nqvo?utm_source=generator&theme=0"
@@ -27,6 +30,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/episode/6Lei7wvK0bDVCajZHkkWqn?utm_source=generator&theme=0"
@@ -37,8 +42,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
-      </div>
-      <div class="flex justify-center space-x-8 mt-4">
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/episode/4BNGWe69Pw8k1Q9EIQtzGI?utm_source=generator&theme=0"
@@ -49,6 +54,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/show/2kH3ec1ljTia7VmwYsm8Xt?utm_source=generator&theme=0"
@@ -59,6 +66,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/show/4298EkFJWEK6VAxKARB7bS?utm_source=generator&theme=0"
@@ -69,8 +78,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
-      </div>
-      <div class="flex justify-center space-x-8 mt-4">
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/show/5UsxoX6ikTr3ETvzQAHbdP?utm_source=generator&theme=0"
@@ -81,6 +90,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/show/571TfkIrKfbMXse360yYfT?utm_source=generator&theme=0"
@@ -91,6 +102,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/show/4W5LEoAIELfsrFgF5rAoEM?utm_source=generator&theme=0"
@@ -101,8 +114,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
-      </div>
-      <div class="flex justify-center space-x-8 mt-4">
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/episode/0jRwe28uDWTxcVg86pS4qR?utm_source=generator&theme=0"
@@ -113,6 +126,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/show/3HWnUfK8VXBXVnrtJS7eAR?utm_source=generator&theme=0"
@@ -123,6 +138,8 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
+        <div className="p-4">
         <iframe
           class="rounded-lg"
           src="https://open.spotify.com/embed/episode/6CmtgiGDJum4cJUmxjhRwZ?utm_source=generator&theme=0"
@@ -133,6 +150,7 @@ export default function MindPodcast() {
           allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
           loading="lazy"
         ></iframe>
+        </div>
       </div>
     </div>
   );

@@ -1,17 +1,4 @@
-import React, { useEffect, useState } from "react";
-import {
-  collection,
-  doc,
-  getDoc,
-  getDocs,
-  limit,
-  orderBy,
-  query,
-  where,
-} from "firebase/firestore";
-import { db } from "../firebase";
-import DisplayBlog from "../components/DisplayBlog";
-import { ImSearch } from "react-icons/im";
+import React from "react";
 import Footer from "../components/Footer";
 import MindPodcast from "../components/MindPodcast";
 import MindVideo from "../components/MindVideo";
@@ -37,5 +24,5 @@ export default function Blog() {
 
       <Footer />
     </div>
-  );
+  )
 }
