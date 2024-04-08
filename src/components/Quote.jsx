@@ -28,8 +28,7 @@ const Quote = () => {
 
   const randomQuote = () => {
     setLoading(true);
-    axios
-      .get("http://api.quotable.io/random")
+   axios.get("https://api.quotable.io/random")
       .then((response) => {
         const { content, author } = response.data;
         setQuote({ content, author });
