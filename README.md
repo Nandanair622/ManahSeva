@@ -1,1 +1,2 @@
 
+ManahSeva is an innovative platform addressing mental health stigma with expert resources, a friendly chat bot, empathetic community groups, and a virtual diary with sentiment analysis. Its multifaceted approach aims to dismantle barriers, foster connections, and personalize mental well-being support. With curated resources, chat support, community groups, and personalized diaries, ManahSeva creates a holistic and user-friendly experience for all.
