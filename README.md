@@ -53,4 +53,10 @@ Open your web browser and navigate to http://localhost:3000 or the specified por
 You should see the React.js + Firebase project running locally.
 ## <strong> 🔴 NOTE 🔴 </strong><br> 
 Additional configuration steps are required to setup ChatBot,Bully Detection and Email.js(Contact Us,Warning mail).
+
+## <strong> ⭐DEVELOPERS⭐ </strong><br>  
+1. Kedar Gawhankar<br> 
+2. Nandana Nair<br> 
+3. Prajwal Patil<br> 
+
 ## <strong> Check out the website here 👉🏻 </strong>: [Live site](https://manahseva.vercel.app/)
